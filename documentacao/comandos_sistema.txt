@@ -1,0 +1,22 @@
+
+
+ambiente virtual do python -- psico
+python -m venv psico
+psico\Scripts\activate
+
+deactivate
+
+Projeto Neurocare
+
+####Git
+
+git init -- só uma vez para iniciar o git dentro do folder
+
+# Cria e muda para a branch 'main'
+git branch -M main
+
+
+# Substitua a URL pela URL do seu repositório remoto recém-criado
+git remote add origin https://github.com/hpesanto/neurocare.git
+
+

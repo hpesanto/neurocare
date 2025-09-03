@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<div class="text-center mt-5">
+    <h1>Bem-vindo ao NeuroCare!</h1>
+    <p class="lead">Sistema de gestão para profissionais da saúde.</p>
+    {% if user.is_authenticated %}
+    <p>Você está logado como <strong>{{ user.username }}</strong>.</p>
+    {% else %}
+    <p><a href="/login/" class="btn btn-primary">Entrar</a></p>
+    {% endif %}
+</div>
+{% endblock %}

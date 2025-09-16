@@ -26,9 +26,9 @@ Para usar PostgreSQL localmente:
 ```powershell
 # Exemplo usando psql (executar no prompt do Postgres ou no PowerShell se psql estiver no PATH)
 psql -U postgres
-CREATE DATABASE neurocare_db;
-CREATE USER neurocare_user WITH PASSWORD 'senha_forte';
-GRANT ALL PRIVILEGES ON DATABASE neurocare_db TO neurocare_user;
+CREATE DATABASE postgres;
+CREATE USER psico WITH PASSWORD 'psico10!';
+GRANT ALL PRIVILEGES ON DATABASE postgres TO psico;
 \q
 ```
 
@@ -51,9 +51,9 @@ Exemplo rápido (PowerShell) — exporte as variáveis antes de executar o servi
 ```powershell
 $env:NEUROCARE_SECRET_KEY = "uma_chave_segura_aqui"
 $env:NEUROCARE_DEBUG = "false"
-$env:NEUROCARE_DB_NAME = "neurocare_db"
-$env:NEUROCARE_DB_USER = "neurocare_user"
-$env:NEUROCARE_DB_PASSWORD = "senha_forte"
+$env:NEUROCARE_DB_NAME = "postgres"
+$env:NEUROCARE_DB_USER = "postgres"
+$env:NEUROCARE_DB_PASSWORD = "postgres"
 $env:NEUROCARE_DB_HOST = "localhost"
 $env:NEUROCARE_DB_PORT = "5432"
 ```

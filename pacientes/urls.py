@@ -7,5 +7,5 @@ app_name = "pacientes"
 urlpatterns = [
     path("", views.list_pacientes, name="list"),
     path("novo/", views.create_paciente, name="create"),
-    path("<int:pk>/editar/", views.update_paciente, name="update"),
+    path("<uuid:pk>/editar/", views.update_paciente, name="update"),
 ]

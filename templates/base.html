@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="pt-br">
+
+<head>
+  <meta charset="utf-8">
+  <title>NeuroCare</title>
+  {% load static %}
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+  <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+</head>
+
+<body>
+  <header>
+    <h1>NeuroCare</h1>
+    <nav>
+      {% include 'includes/menu.html' %}
+      <ul class="auth-links">
+        {% if user.is_authenticated %}
+        <li><a href="{% url 'profile' %}">Perfil</a></li>
+        <li><a href="{% url 'logout' %}">Sair</a></li>
+        {% else %}
+        <li><a href="{% url 'login' %}">Entrar</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+  </header>
+  <main>
+    <section class="hero">
+      <img src="{% static 'images/logo.jpg' %}" alt="NeuroCare" class="logo">
+    </section>
+    <section class="card">
+      {% block content %}{% endblock %}
+    </section>
+  </main>
+  <script src="{% static 'js/menu.js' %}"></script>
+</body>
+
+</html>

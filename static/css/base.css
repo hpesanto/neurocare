@@ -1,0 +1,88 @@
+/* static/css/base.css - base styles for NeuroCare */
+:root {
+    --primary: #0b6b5a;
+    --primary-contrast: #ffffff;
+    --muted: #6b6b6b;
+    --bg: #f7f9fa;
+    --card: #ffffff;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    margin: 0;
+    background: var(--bg);
+    color: #222;
+}
+
+header {
+    background: linear-gradient(90deg, rgba(11, 107, 90, 0.95), rgba(12, 136, 110, 0.95));
+    color: var(--primary-contrast);
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.25rem;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem
+}
+
+main {
+    padding: 2rem;
+    min-height: 70vh
+}
+
+.auth-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 0.5rem
+}
+
+.auth-links li a {
+    color: var(--primary-contrast);
+    background: rgba(255, 255, 255, 0.08);
+    padding: 0.35rem 0.6rem;
+    border-radius: 4px;
+    text-decoration: none
+}
+
+/* hero */
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 40vh;
+}
+
+.hero .logo {
+    width: 40%;
+    max-width: 420px;
+    opacity: 0.95;
+}
+
+.card {
+    background: var(--card);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 6px 18px rgba(20, 30, 40, 0.06);
+}
+
+footer {
+    padding: 1rem 2rem;
+    color: var(--muted);
+    font-size: 0.9rem
+}

@@ -1,0 +1,160 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Pacientes</h2>
+<div class="card">
+    <h3>Novo Paciente</h3>
+    <form method="post" id="create-form" action="{% url 'pacientes:create' %}">
+        {% csrf_token %}
+        {{ form|default:None }}
+        {% if not form %}
+        <p><label>Nome<br><input name="nome" required></label></p>
+        <p><label>CPF<br><input name="cpf"></label></p>
+        <p><label>Telefone<br><input name="tel_1"></label></p>
+        <p><label>Email<br><input name="email" type="email"></label></p>
+        {% endif %}
+        <button type="submit">Salvar</button>
+    </form>
+
+    <hr>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>Email</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pacientes %}
+            <tr>
+                <td>{{ p.id }}</td>
+                <td>{{ p.nome }}</td>
+                <td>{{ p.cpf }}</td>
+                <td>{{ p.genero_display }}</td>
+                <td>{{ p.tel_1 }}</td>
+                <td>{{ p.email }}</td>
+                <td>
+                    <button class="btn-edit" data-url="{% url 'pacientes:update' p.id %}">Editar</button>
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="6">Nenhum paciente cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Modal container for AJAX edit form -->
+<div id="modal"
+    style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;">
+    <div id="modal-content" style="background:#fff;padding:1rem;border-radius:8px;max-width:800px;width:90%;">
+        <button id="modal-close" style="float:right">Fechar</button>
+        <div id="modal-body">Carregando...</div>
+    </div>
+</div>
+
+<script>
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        // Load edit form into modal (request HTML partial)
+        document.querySelectorAll('.btn-edit').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                const url = btn.getAttribute('data-url');
+                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
+                    .then(r => r.text())
+                    .then(html => {
+                        document.getElementById('modal-body').innerHTML = html;
+                        document.getElementById('modal').style.display = 'flex';
+                        // attach submit handler
+                        const form = document.querySelector('#modal-body form');
+                        if (form) {
+                            form.addEventListener('submit', function (ev) {
+                                ev.preventDefault();
+                                const formData = new FormData(form);
+                                fetch(form.action, {
+                                    method: 'POST',
+                                    headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' },
+                                    body: formData
+                                }).then(async resp => {
+                                    if (resp.ok) {
+                                        location.reload();
+                                    } else {
+                                        const data = await resp.json().catch(() => null);
+                                        if (data && data.errors) {
+                                            // simple display: replace modal body with rendered form errors
+                                            document.getElementById('modal-body').innerHTML = data.errors_html || '<div class="errors">Verifique os campos.</div>';
+                                        }
+                                    }
+                                });
+                            });
+                        }
+                    });
+            });
+        });
+
+        document.getElementById('modal-close').addEventListener('click', function () {
+            document.getElementById('modal').style.display = 'none';
+        });
+
+        // Intercept create form and submit via fetch so we can show validation errors inline
+        const createForm = document.getElementById('create-form');
+        if (createForm) {
+            createForm.addEventListener('submit', function (ev) {
+                ev.preventDefault();
+                const formData = new FormData(createForm);
+                fetch(createForm.action, {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' },
+                    body: formData
+                }).then(async resp => {
+                    if (resp.ok) {
+                        location.reload();
+                    } else {
+                        const data = await resp.json().catch(() => null);
+                        if (data && data.errors) {
+                            // clear previous simple errors
+                            const errContainer = document.getElementById('create-errors');
+                            if (errContainer) errContainer.remove();
+                            const container = document.createElement('div');
+                            container.id = 'create-errors';
+                            container.className = 'errors';
+                            // render basic errors
+                            let html = '<ul>';
+                            for (const [field, errs] of Object.entries(data.errors)) {
+                                for (const e of errs) {
+                                    html += `<li>${field}: ${e}</li>`;
+                                }
+                            }
+                            html += '</ul>';
+                            container.innerHTML = html;
+                            createForm.parentNode.insertBefore(container, createForm);
+                        }
+                    }
+                });
+            });
+        }
+    });
+</script>
+
+{% endblock %}

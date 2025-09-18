@@ -45,21 +45,39 @@ def create_paciente(request):
     if request.method == "POST":
         form = PacienteForm(request.POST)
         if form.is_valid():
-            form.save()
-            # If AJAX request, return JSON success
+            saved = form.save()
+            # If AJAX request, return JSON with rendered row HTML so client can insert it
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 from django.http import JsonResponse
+                from django.template.loader import render_to_string
 
-                return JsonResponse({"ok": True})
+                row_html = render_to_string(
+                    "pacientes/row.html", {"paciente": saved}, request=request
+                )
+                return JsonResponse({"ok": True, "row_html": row_html, "id": saved.id})
             return redirect(reverse("pacientes:list"))
         else:
             # Return JSON errors when AJAX
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 from django.http import JsonResponse
+                from django.template.loader import render_to_string
 
-                return JsonResponse({"ok": False, "errors": form.errors}, status=400)
+                form_html = render_to_string(
+                    "pacientes/_form_partial.html",
+                    {"form": form, "title": "Novo Paciente"},
+                    request=request,
+                )
+                return JsonResponse({"ok": False, "form_html": form_html}, status=400)
     else:
         form = PacienteForm()
+    # If AJAX GET (fetch) return the form partial so it can be rendered inside the modal
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return render(
+            request,
+            "pacientes/_form_partial.html",
+            {"form": form, "title": "Novo Paciente"},
+        )
+
     return render(
         request, "pacientes/form.html", {"form": form, "title": "Novo Paciente"}
     )
@@ -70,17 +88,31 @@ def update_paciente(request, pk):
     if request.method == "POST":
         form = PacienteForm(request.POST, instance=paciente)
         if form.is_valid():
-            form.save()
+            saved = form.save()
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 from django.http import JsonResponse
+                from django.template.loader import render_to_string
 
-                return JsonResponse({"ok": True})
+                row_html = render_to_string(
+                    "pacientes/row.html", {"paciente": saved}, request=request
+                )
+                return JsonResponse({"ok": True, "row_html": row_html, "id": saved.id})
             return redirect(reverse("pacientes:list"))
         else:
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
                 from django.http import JsonResponse
+                from django.template.loader import render_to_string
 
-                return JsonResponse({"ok": False, "errors": form.errors}, status=400)
+                form_html = render_to_string(
+                    "pacientes/_form_partial.html",
+                    {
+                        "form": form,
+                        "title": f"Editar {paciente.nome}",
+                        "instance": paciente,
+                    },
+                    request=request,
+                )
+                return JsonResponse({"ok": False, "form_html": form_html}, status=400)
     else:
         form = PacienteForm(instance=paciente)
     # If this is an AJAX/fetch load request, return only the form partial

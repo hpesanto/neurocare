@@ -2,26 +2,71 @@
 
 {% block content %}
 <h2>Pacientes</h2>
-<div class="card">
-    <h3>Novo Paciente</h3>
-    <form method="post" id="create-form" action="{% url 'pacientes:create' %}">
-        {% csrf_token %}
-        {{ form|default:None }}
-        {% if not form %}
-        <p><label>Nome<br><input name="nome" required></label></p>
-        <p><label>CPF<br><input name="cpf"></label></p>
-        <p><label>Telefone<br><input name="tel_1"></label></p>
-        <p><label>Email<br><input name="email" type="email"></label></p>
-        {% endif %}
-        <button type="submit">Salvar</button>
-    </form>
 
-    <hr>
+<style>
+    /* simple modal styles local to this template */
+    #pacienteModal {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1000
+    }
 
-    <table class="table">
+    /* overlay should be fixed so it covers viewport even if page scrolls */
+    #pacienteModal .modal-overlay {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    /* dialog constrained to viewport height and scrolls internally when content is tall */
+    #pacienteModal .modal-dialog {
+        position: relative;
+        max-width: 800px;
+        margin: 6% auto;
+        background: #fff;
+        padding: 16px;
+        border-radius: 6px;
+        z-index: 1001;
+        /* ensure dialog doesn't exceed viewport height */
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    #modalContent .modal-footer {
+        margin-top: 12px;
+        text-align: right
+    }
+
+    #modalContent .modal-footer .btn {
+        margin-left: 8px
+    }
+</style>
+<!-- patients table visual polish moved to static/css/base.css -->
+
+<!-- view controls -->
+<div class="view-controls" style="margin:12px 0;display:flex;gap:8px;align-items:center;">
+    <div>
+        <button id="viewTable" class="button">Tabela</button>
+        <button id="viewCards" class="button">Cartões</button>
+        <button id="viewAdvanced" class="button">Avançada</button>
+    </div>
+    <div style="margin-left:auto">
+        <input id="patientsSearch" placeholder="Pesquisar por nome..."
+            style="padding:6px 8px;border-radius:6px;border:1px solid #ddd;" />
+    </div>
+</div>
+
+<div class="list-container table-mode">
+    <table id="patientsTable" class="table patients-table">
         <thead>
             <tr>
-                <th>ID</th>
                 <th>Nome</th>
                 <th>CPF</th>
                 <th>Telefone</th>
@@ -31,130 +76,64 @@
         </thead>
         <tbody>
             {% for p in pacientes %}
-            <tr>
-                <td>{{ p.id }}</td>
-                <td>{{ p.nome }}</td>
-                <td>{{ p.cpf }}</td>
-                <td>{{ p.genero_display }}</td>
-                <td>{{ p.tel_1 }}</td>
-                <td>{{ p.email }}</td>
-                <td>
-                    <button class="btn-edit" data-url="{% url 'pacientes:update' p.id %}">Editar</button>
-                </td>
-            </tr>
+            {% include 'pacientes/row.html' with paciente=p %}
             {% empty %}
             <tr>
-                <td colspan="6">Nenhum paciente cadastrado.</td>
+                <td colspan="5">Nenhum paciente cadastrado.</td>
             </tr>
             {% endfor %}
         </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" style="text-align:right;">
+                    <button id="btnNew" class="btn" data-url="{% url 'pacientes:create' %}">Novo</button>
+                </td>
+            </tr>
+        </tfoot>
     </table>
 </div>
 
-<!-- Modal container for AJAX edit form -->
-<div id="modal"
-    style="display:none;position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,0.5);align-items:center;justify-content:center;">
-    <div id="modal-content" style="background:#fff;padding:1rem;border-radius:8px;max-width:800px;width:90%;">
-        <button id="modal-close" style="float:right">Fechar</button>
-        <div id="modal-body">Carregando...</div>
+<!-- cards container (hidden by default) -->
+<div class="cards-container" style="display:none;gap:12px;margin-top:12px;">
+    {% for p in pacientes %}
+    {% include 'pacientes/card.html' with paciente=p %}
+    {% empty %}
+    <div>Nenhum paciente cadastrado.</div>
+    {% endfor %}
+</div>
+
+<!-- Modal container -->
+<div id="pacienteModal" class="modal" style="display:none;">
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-dialog" id="modalDialog">
+        <div id="modalContent"></div>
+        <!-- hidden spinner template -->
+        <div id="modalSpinner" style="display:none;">
+            <div style="padding:24px;text-align:center">
+                <div class="spinner"
+                    style="width:36px;height:36px;border:4px solid #ccc;border-top-color:#333;border-radius:50%;margin:0 auto 8px auto;animation:spin 1s linear infinite">
+                </div>
+                <div>Carregando...</div>
+            </div>
+        </div>
     </div>
 </div>
 
-<script>
-    function getCookie(name) {
-        let cookieValue = null;
-        if (document.cookie && document.cookie !== '') {
-            const cookies = document.cookie.split(';');
-            for (let i = 0; i < cookies.length; i++) {
-                const cookie = cookies[i].trim();
-                if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                    break;
-                }
-            }
+<style>
+    @keyframes spin {
+        from {
+            transform: rotate(0)
         }
-        return cookieValue;
+
+        to {
+            transform: rotate(360deg)
+        }
     }
+</style>
 
-    document.addEventListener('DOMContentLoaded', function () {
-        // Load edit form into modal (request HTML partial)
-        document.querySelectorAll('.btn-edit').forEach(function (btn) {
-            btn.addEventListener('click', function () {
-                const url = btn.getAttribute('data-url');
-                fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } })
-                    .then(r => r.text())
-                    .then(html => {
-                        document.getElementById('modal-body').innerHTML = html;
-                        document.getElementById('modal').style.display = 'flex';
-                        // attach submit handler
-                        const form = document.querySelector('#modal-body form');
-                        if (form) {
-                            form.addEventListener('submit', function (ev) {
-                                ev.preventDefault();
-                                const formData = new FormData(form);
-                                fetch(form.action, {
-                                    method: 'POST',
-                                    headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' },
-                                    body: formData
-                                }).then(async resp => {
-                                    if (resp.ok) {
-                                        location.reload();
-                                    } else {
-                                        const data = await resp.json().catch(() => null);
-                                        if (data && data.errors) {
-                                            // simple display: replace modal body with rendered form errors
-                                            document.getElementById('modal-body').innerHTML = data.errors_html || '<div class="errors">Verifique os campos.</div>';
-                                        }
-                                    }
-                                });
-                            });
-                        }
-                    });
-            });
-        });
+{% endblock %}
 
-        document.getElementById('modal-close').addEventListener('click', function () {
-            document.getElementById('modal').style.display = 'none';
-        });
-
-        // Intercept create form and submit via fetch so we can show validation errors inline
-        const createForm = document.getElementById('create-form');
-        if (createForm) {
-            createForm.addEventListener('submit', function (ev) {
-                ev.preventDefault();
-                const formData = new FormData(createForm);
-                fetch(createForm.action, {
-                    method: 'POST',
-                    headers: { 'X-CSRFToken': getCookie('csrftoken'), 'X-Requested-With': 'XMLHttpRequest' },
-                    body: formData
-                }).then(async resp => {
-                    if (resp.ok) {
-                        location.reload();
-                    } else {
-                        const data = await resp.json().catch(() => null);
-                        if (data && data.errors) {
-                            // clear previous simple errors
-                            const errContainer = document.getElementById('create-errors');
-                            if (errContainer) errContainer.remove();
-                            const container = document.createElement('div');
-                            container.id = 'create-errors';
-                            container.className = 'errors';
-                            // render basic errors
-                            let html = '<ul>';
-                            for (const [field, errs] of Object.entries(data.errors)) {
-                                for (const e of errs) {
-                                    html += `<li>${field}: ${e}</li>`;
-                                }
-                            }
-                            html += '</ul>';
-                            container.innerHTML = html;
-                            createForm.parentNode.insertBefore(container, createForm);
-                        }
-                    }
-                });
-            });
-        }
-    });
-</script>
-
+{% block scripts %}
+{% load static %}
+<script src="{% static 'pacientes/pacientes.js' %}"></script>
 {% endblock %}

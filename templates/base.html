@@ -3,21 +3,32 @@
 
 <head>
   <meta charset="utf-8">
-  <title>NeuroCare</title>
   {% load static %}
-  <link rel="stylesheet" href="{% static 'css/base.css' %}">
-  <link rel="stylesheet" href="{% static 'css/menu.css' %}">
+  <title>{% block title %}NeuroCare{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/base.css' %}{% if static_version %}?v={{ static_version }}{% endif %}">
+  <link rel="stylesheet" href="{% static 'css/menu.css' %}{% if static_version %}?v={{ static_version }}{% endif %}">
 </head>
 
 <body>
   <header>
-    <h1>NeuroCare</h1>
+    <div class="brand">
+      {# Link para a home. Se não existir a URL nomeada 'home', use '/' como fallback. #}
+      <a class="brand-link" href="{% url 'home' %}">
+        <img src="{% static 'images/logo.jpg' %}{% if logo_version %}?v={{ logo_version }}{% endif %}" alt="NeuroCare"
+          class="logo-header">
+      </a>
+    </div>
     <nav>
       {% include 'includes/menu.html' %}
       <ul class="auth-links">
         {% if user.is_authenticated %}
         <li><a href="{% url 'profile' %}">Perfil</a></li>
-        <li><a href="{% url 'logout' %}">Sair</a></li>
+        <li>
+          <form method="post" action="{% url 'logout' %}" style="display:inline; margin:0;">
+            {% csrf_token %}
+            <button type="submit" class="link-button">Sair</button>
+          </form>
+        </li>
         {% else %}
         <li><a href="{% url 'login' %}">Entrar</a></li>
         {% endif %}
@@ -25,14 +36,13 @@
     </nav>
   </header>
   <main>
-    <section class="hero">
-      <img src="{% static 'images/logo.jpg' %}" alt="NeuroCare" class="logo">
-    </section>
+    {# hero removido: espaço do layout agora é controlado por .card e main #}
     <section class="card">
       {% block content %}{% endblock %}
     </section>
   </main>
-  <script src="{% static 'js/menu.js' %}"></script>
+  <script src="{% static 'js/menu.js' %}{% if static_version %}?v={{ static_version }}{% endif %}"></script>
+  {% block scripts %}{% endblock %}
 </body>
 
 </html>

@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+psico/
+.vscode/
+.DS_Store
+.env

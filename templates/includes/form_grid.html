@@ -1,0 +1,41 @@
+{# Reusable form grid partial: this include should only render a list of fields.
+Preferred usage from parent template:
+{% include 'includes/form_grid.html' with fields=form.visible_fields %}
+
+If 'fields' is not provided, fallback to using form.visible_fields when a
+'form' variable exists in the context (best-effort fallback).
+#}
+
+{# Minimal, defensive renderer: only render field widget markup.
+Avoid attribute lookups (like field.label, field.field.required) which
+can raise in some contexts and trigger deep template resolution/logging.
+Parent templates should render labels or pass pre-computed label HTML
+if needed. Preferred usage still: with fields=form.visible_fields
+#}
+
+{# New preferred usage: include with field_items prepared via the template tag:
+{% load form_helpers %}
+{% prepare_field_items form as field_items %}
+{% include 'includes/form_grid.html' with field_items=field_items %}
+#}
+
+{% if field_items %}
+{% for item in field_items %}
+<div class="form-field">
+    <div class="field-label">{{ item.label_html }}</div>
+    <div class="field-widget">{{ item.widget_html }}</div>
+    {{ item.errors_html }}
+    {{ item.help_html }}
+</div>
+{% endfor %}
+{% elif fields %}
+{% for field in fields %}
+<div class="form-field">{{ field }}</div>
+{% endfor %}
+{% elif form %}
+{% for field in form.visible_fields %}
+<div class="form-field">{{ field }}</div>
+{% endfor %}
+{% else %}
+{# nothing to render #}
+{% endif %}

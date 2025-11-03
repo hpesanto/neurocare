@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Pacientes</h2>
+
+<style>
+    /* simple modal styles local to this template */
+    #pacienteModal {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1000
+    }
+
+    /* overlay should be fixed so it covers viewport even if page scrolls */
+    #pacienteModal .modal-overlay {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    /* dialog constrained to viewport height and scrolls internally when content is tall */
+    #pacienteModal .modal-dialog {
+        position: relative;
+        max-width: 800px;
+        margin: 6% auto;
+        background: #fff;
+        padding: 16px;
+        border-radius: 6px;
+        z-index: 1001;
+        /* ensure dialog doesn't exceed viewport height */
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    #modalContent .modal-footer {
+        margin-top: 12px;
+        text-align: right
+    }
+
+    #modalContent .modal-footer .btn {
+        margin-left: 8px
+    }
+</style>
+<!-- patients table visual polish moved to static/css/base.css -->
+
+<!-- view controls -->
+<div class="view-controls" style="margin:12px 0;display:flex;gap:8px;align-items:center;">
+    <div>
+        <button id="viewTable" class="button">Tabela</button>
+        <button id="viewCards" class="button">Cartões</button>
+    </div>
+    <div style="margin-left:auto">
+        <input id="patientsSearch" placeholder="Pesquisar por nome..."
+            style="padding:6px 8px;border-radius:6px;border:1px solid #ddd;" />
+    </div>
+</div>
+
+<div class="list-container table-mode">
+    <table id="patientsTable" class="table patients-table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Telefone</th>
+                <th>Email</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in pacientes %}
+            {% include 'pacientes/row.html' with paciente=p %}
+            {% empty %}
+            <tr>
+                <td colspan="5">Nenhum paciente cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" style="text-align:right;">
+                    <button id="btnNew" class="btn" data-url="{% url 'pacientes:create' %}">Novo</button>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<!-- cards container (hidden by default) -->
+<div class="cards-container" style="display:none;gap:12px;margin-top:12px;">
+    {% for p in pacientes %}
+    {% include 'pacientes/card.html' with paciente=p %}
+    {% empty %}
+    <div>Nenhum paciente cadastrado.</div>
+    {% endfor %}
+</div>
+
+<!-- Modal container -->
+<div id="pacienteModal" class="modal" style="display:none;">
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-dialog" id="modalDialog">
+        <div id="modalContent"></div>
+        <!-- hidden spinner template -->
+        <div id="modalSpinner" style="display:none;">
+            <div style="padding:24px;text-align:center">
+                <div class="spinner"
+                    style="width:36px;height:36px;border:4px solid #ccc;border-top-color:#333;border-radius:50%;margin:0 auto 8px auto;animation:spin 1s linear infinite">
+                </div>
+                <div>Carregando...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @keyframes spin {
+        from {
+            transform: rotate(0)
+        }
+
+        to {
+            transform: rotate(360deg)
+        }
+    }
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script src="{% static 'pacientes/pacientes.js' %}"></script>
+{% endblock %}

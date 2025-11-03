@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Transações Financeiras</h2>
+
+<div style="margin:12px 0;display:flex;gap:8px;align-items:center;">
+    <div style="margin-left:auto">
+        <input id="search" placeholder="Pesquisar..."
+            style="padding:6px 8px;border-radius:6px;border:1px solid #ddd;" />
+    </div>
+</div>
+
+<div class="list-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Psicólogo</th>
+                <th>Paciente</th>
+                <th>Data</th>
+                <th>Tipo</th>
+                <th>Valor</th>
+                <th>Forma Pagamento</th>
+                <th>Status</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            {% include 'transacoes/row.html' with item=item %}
+            {% empty %}
+            <tr>
+                <td colspan="8">Nenhuma transação registrada.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="8" style="text-align:right;"><button id="btnNew" class="btn"
+                        data-url="{% url 'transacoes:create' %}">Novo</button></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div id="modal" style="display:none;"></div>
+
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script>
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest && e.target.closest('button[data-url]');
+        if (!btn) return;
+        e.preventDefault();
+        const url = btn.getAttribute('data-url');
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' })
+            .then(r => { if (!r.ok) throw new Error('Network response was not ok: ' + r.status); return r.text(); })
+            .then(html => {
+                const modal = document.getElementById('modal');
+                if (!modal) throw new Error('Modal container #modal not found');
+                modal.innerHTML = html;
+                modal.style.display = 'block';
+            })
+            .catch(err => { console.error('Error loading form', err); alert('Erro ao carregar o formulário. Veja o console para detalhes.'); });
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Status de Pagamento</h2>
+<div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;">
+    <div style="font-size:0.9rem;color:#666">Total: <strong>{{ items|length }}</strong></div>
+</div>
+
+<div class="list-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th style="width:160px">Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            {% include 'status_pagamento/row.html' with item=item %}
+            {% empty %}
+            <tr>
+                <td colspan="2">Nenhum status registrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="2" style="text-align:right;"><button id="btnNewStatus" class="btn btn-primary"
+                        data-url="{% url 'status_pagamento:create' %}">Novo</button></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div id="modal" style="display:none;"></div>
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+{# modal_ajax.js is loaded globally from base.html; keep this block for page-specific scripts if needed #}
+
+{% endblock %}

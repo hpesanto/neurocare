@@ -1,0 +1,30 @@
+<div class="card">
+    <h3>{{ title }}</h3>
+    <form method="post" id="paciente-form" action="{{ request.path }}">
+        {% csrf_token %}
+        <div class="form-grid">
+            {% load form_helpers %}
+            {% prepare_field_items form as field_items %}
+            {% if field_items %}
+            {% for item in field_items %}
+            <div class="form-field">
+                <div class="field-label">{{ item.label_html }}</div>
+                <div class="field-widget">{{ item.widget_html }}</div>
+                {{ item.errors_html }}
+                {{ item.help_html }}
+            </div>
+            {% endfor %}
+            {% else %}
+            {# Fallback: render visible fields if prepare_field_items produced nothing #}
+            {% for field in form.visible_fields %}
+            <div class="form-field">{{ field }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <div class="form-actions modal-footer">
+                <button type="button" id="btnCancel" class="btn">Cancelar</button>
+                <button type="submit" class="btn">Salvar</button>
+            </div>
+        </div>
+    </form>
+</div>

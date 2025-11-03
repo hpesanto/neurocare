@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Contatos de Emergencia</h1>
+
+<div class="toolbar">
+    <button id="btnNew" class="btn btn-primary" data-create-url="{% url 'contatos_emergencia:create' %}">Novo</button>
+</div>
+
+<table class="table" id="contatos-table">
+    <thead>
+        <tr>
+            <th>Paciente</th>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>Parentesco</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for contato in contatos %}
+        {% include 'contatos_emergencia/row.html' with contato=contato %}
+        {% empty %}
+        <tr>
+            <td colspan="5">Nenhum contato cadastrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal container -->
+<div id="modal-container"></div>
+
+{% load static %}
+<script src="{% static 'contatos_emergencia/contatos_emergencia.js' %}"></script>
+
+{% endblock %}

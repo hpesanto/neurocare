@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Produtos</h1>
+
+<div class="toolbar">
+    <button id="btnNew" class="btn btn-primary" data-create-url="{% url 'produtos:create' %}">Novo</button>
+</div>
+
+<table class="table" id="produtos-table">
+    <thead>
+        <tr>
+            <th>Tipo</th>
+            <th>Nome</th>
+            <th>Valor Unit.</th>
+            <th>Ativo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for produto in produtos %}
+        {% include 'produtos/row.html' with produto=produto %}
+        {% empty %}
+        <tr>
+            <td colspan="5">Nenhum produto cadastrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal container -->
+<div id="modal-container"></div>
+
+{% load static %}
+<script src="{% static 'produtos/produtos.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,26 @@
+<div id="modal-content">
+    <button id="modal-close" aria-label="Fechar" data-modal-close="true"
+        style="position:absolute;right:8px;top:8px;background:transparent;border:none;font-size:18px;">×</button>
+    <div id="modal-body">
+        <h3>{% if obj %}Editar{% else %}Criar{% endif %} Status Pagamento</h3>
+        <form method="post" action="{{ action }}" id="statusForm">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.nome.label_tag }}
+                {{ form.nome }}
+                {% if form.nome.errors %}
+                <div class="errors">{{ form.nome.errors }}</div>
+                {% endif %}
+            </div>
+
+            <div style="text-align:right;margin-top:8px;">
+                <button type="submit" class="btn btn-primary">Salvar</button>
+                <button type="button" class="btn btn-secondary" id="btnCancel" data-modal-close="true">Fechar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // modal form submit is handled by static/js/modal_ajax.js
+    </script>
+</div>

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Faixas Etárias</h1>
+
+<div class="toolbar">
+    <button id="btnNew" class="btn btn-primary" data-create-url="{% url 'faixas:create' %}">Novo</button>
+</div>
+
+<table class="table" id="faixas-table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Descrição</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for faixa in faixas %}
+        {% include 'faixas/row.html' with faixa=faixa %}
+        {% empty %}
+        <tr>
+            <td colspan="3">Nenhuma faixa cadastrada.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal container -->
+<div id="modal-container"></div>
+
+{% load static %}
+<script src="{% static 'faixas/faixas.js' %}"></script>
+
+{% endblock %}

@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Formas de Pagamento</h1>
+
+<div class="toolbar">
+    <button id="btnNew" class="btn btn-primary" data-create-url="{% url 'formas_pagamento:create' %}">Novo</button>
+</div>
+
+<table class="table" id="formas-table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for forma in formas %}
+        {% include 'formas_pagamento/row.html' with forma=forma %}
+        {% empty %}
+        <tr>
+            <td colspan="2">Nenhuma forma cadastrada.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal container -->
+<div id="modal-container"></div>
+
+{% load static %}
+<script src="{% static 'formas_pagamento/formas_pagamento.js' %}"></script>
+
+{% endblock %}

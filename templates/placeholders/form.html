@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+{% if description %}
+<p>{{ description }}</p>
+{% else %}
+<p>Formulário em construção. Aqui ficará o formulário para criar/editar o recurso.</p>
+{% endif %}
+
+<form>
+    <div>
+        <label>Campo exemplo</label>
+        <input type="text" name="exemplo" />
+    </div>
+    <p>
+        <button type="submit">Salvar</button>
+        <a href="?mode=list">Voltar à lista</a>
+    </p>
+</form>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Convênios</h1>
+
+<div class="toolbar">
+    <button id="btnNew" class="btn btn-primary" data-create-url="{% url 'convenios:create' %}">Novo</button>
+</div>
+
+<table class="table" id="convenios-table">
+    <thead>
+        <tr>
+            <th>Nome</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for convenio in convenios %}
+            {% include 'convenios/row.html' with convenio=convenio %}
+        {% empty %}
+            <tr><td colspan="2">Nenhum convênio cadastrado.</td></tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal container -->
+<div id="modal-container"></div>
+
+{% load static %}
+<script src="{% static 'convenios/convenios.js' %}"></script>
+
+{% endblock %}

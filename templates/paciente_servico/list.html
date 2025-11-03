@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Paciente x Servico</h1>
+
+<div class="toolbar">
+    <button id="btnNew" class="btn btn-primary" data-create-url="{% url 'paciente_servico:create' %}">Novo</button>
+</div>
+
+<table class="table" id="paciente-servico-table">
+    <thead>
+        <tr>
+            <th>Paciente</th>
+            <th>Tipo Serviço</th>
+            <th>Psicólogo</th>
+            <th>Início</th>
+            <th>Fim</th>
+            <th>Ativo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for servico in servicos %}
+        {% include 'paciente_servico/row.html' with servico=servico %}
+        {% empty %}
+        <tr>
+            <td colspan="7">Nenhum registro cadastrado.</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<!-- Modal container -->
+<div id="modal-container"></div>
+
+{% load static %}
+<script src="{% static 'paciente_servico/paciente_servico.js' %}"></script>
+
+{% endblock %}

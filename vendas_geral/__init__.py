@@ -1,0 +1,1 @@
+"""Vendas Gerais (Consultório) app."""

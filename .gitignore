@@ -1,0 +1,20 @@
+# Ambientes virtuais
+psico/
+
+# Arquivos de cache e compilação Python
+__pycache__/
+*.pyc
+
+# Configurações de IDEs e editores (ex: VS Code, PyCharm)
+.vscode/
+.idea/
+
+# Arquivos de banco de dados locais (se usar SQLite, por exemplo)
+*.sqlite3
+db.sqlite3
+
+# Logs
+*.log
+
+# Arquivos de sistema operacional
+Thumbs.db # Windows

@@ -1,0 +1,14 @@
+<li class="{% if item.children %}has-children{% endif %}">
+    {% if item.url %}
+    <a href="{{ item.url }}" role="menuitem">{{ item.title }}</a>
+    {% else %}
+    <span role="menuitem" tabindex="0">{{ item.title }}</span>
+    {% endif %}
+    {% if item.children %}
+    <ul class="submenu" role="menu" aria-label="{{ item.title }} submenu">
+        {% for child in item.children %}
+        {% include 'includes/menu_item.html' with item=child %}
+        {% endfor %}
+    </ul>
+    {% endif %}
+</li>

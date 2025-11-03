@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Profissionais</h2>
+
+<style>
+    /* simple modal styles similar to pacientes */
+    #profissionalModal {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 1000
+    }
+
+    #profissionalModal .modal-overlay {
+        position: fixed;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.4);
+    }
+
+    #profissionalModal .modal-dialog {
+        position: relative;
+        max-width: 800px;
+        margin: 6% auto;
+        background: #fff;
+        padding: 16px;
+        border-radius: 6px;
+        z-index: 1001;
+        max-height: calc(100vh - 80px);
+        overflow-y: auto;
+        box-sizing: border-box;
+    }
+
+    #modalContent .modal-footer {
+        margin-top: 12px;
+        text-align: right
+    }
+
+    #modalContent .modal-footer .btn {
+        margin-left: 8px
+    }
+</style>
+
+<div class="view-controls" style="margin:12px 0;display:flex;gap:8px;align-items:center;">
+    <div>
+        <button id="viewTable" class="button">Tabela</button>
+        <button id="viewCards" class="button">Cartões</button>
+    </div>
+    <div style="margin-left:auto">
+        <input id="profissionaisSearch" placeholder="Pesquisar por nome..."
+            style="padding:6px 8px;border-radius:6px;border:1px solid #ddd;" />
+    </div>
+</div>
+
+<div class="list-container table-mode">
+    <table id="profissionaisTable" class="table profissionais-table">
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th>CPF</th>
+                <th>Especialidade</th>
+                <th>Celular / Telefone</th>
+                <th>Email</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for p in profissionais %}
+            {% include 'profissionais/row.html' with profissional=p %}
+            {% empty %}
+            <tr>
+                <td colspan="6">Nenhum profissional cadastrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="6" style="text-align:right;">
+                    <button id="btnNew" class="btn" data-url="{% url 'profissionais:create' %}">Novo</button>
+                </td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div class="cards-container" style="display:none;gap:12px;margin-top:12px;">
+    {% for p in profissionais %}
+    {% include 'profissionais/card.html' with profissional=p %}
+    {% empty %}
+    <div>Nenhum profissional cadastrado.</div>
+    {% endfor %}
+</div>
+
+<div id="profissionalModal" class="modal" style="display:none;">
+    <div class="modal-overlay" id="modalOverlay"></div>
+    <div class="modal-dialog" id="modalDialog">
+        <div id="modalContent"></div>
+        <div id="modalSpinner" style="display:none;">
+            <div style="padding:24px;text-align:center">
+                <div class="spinner"
+                    style="width:36px;height:36px;border:4px solid #ccc;border-top-color:#333;border-radius:50%;margin:0 auto 8px auto;animation:spin 1s linear infinite">
+                </div>
+                <div>Carregando...</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script src="{% static 'profissionais/profissionais.js' %}"></script>
+<style>
+    @keyframes spin {
+        from {
+            transform: rotate(0)
+        }
+
+        to {
+            transform: rotate(360deg)
+        }
+    }
+</style>
+{% endblock %}

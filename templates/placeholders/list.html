@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{ title }}</h1>
+{% if description %}
+<p>{{ description }}</p>
+{% else %}
+<p>Lista em construção. Esta página servirá como listagem para o recurso.</p>
+{% endif %}
+
+<div class="placeholder-list">
+    <p><em>Exemplo de item 1</em></p>
+    <p><em>Exemplo de item 2</em></p>
+</div>
+
+<p>
+    <a class="btn" href="?mode=form">Novo (abrir formulário)</a>
+</p>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% load form_helpers %}
+<div class="card">
+    <h3>{{ title }}</h3>
+    <form method="post" id="profissional-form" action="{{ request.path }}">
+        {% csrf_token %}
+        <div class="form-grid">
+            {# Prefer explicit ordering to match the DDL-backed form #}
+            <div class="form-field">
+                <label for="id_id_perfil_acesso">Perfil de Acesso</label>
+                {{ form.id_perfil_acesso }}
+                {{ form.id_perfil_acesso.errors }}
+            </div>
+
+            <div class="form-field">
+                <label for="id_nome">Nome completo</label>
+                {{ form.nome }}
+                {{ form.nome.errors }}
+            </div>
+
+            <div class="form-field">
+                <label for="id_email">E-mail</label>
+                {{ form.email }}
+                {{ form.email.errors }}
+            </div>
+
+            <div class="form-field">
+                <label for="id_login">Login</label>
+                {{ form.login }}
+                {{ form.login.errors }}
+            </div>
+
+            <div class="form-field">
+                <label for="id_senha">Senha</label>
+                {{ form.senha }}
+                {{ form.senha.errors }}
+            </div>
+
+            <div class="form-field">
+                <label for="id_ativo">Ativo</label>
+                {{ form.ativo }}
+                {{ form.ativo.errors }}
+            </div>
+
+            {# Render any other visible fields as a fallback #}
+            {% for field in form.visible_fields %}
+            {% if field.name not in "id_perfil_acesso nome email login senha ativo" %}
+            <div class="form-field">{{ field }}</div>
+            {% endif %}
+            {% endfor %}
+
+            <div class="form-actions modal-footer">
+                <button type="button" id="btnCancel" class="btn">Cancelar</button>
+                <button type="submit" class="btn">Salvar</button>
+            </div>
+        </div>
+    </form>
+</div>

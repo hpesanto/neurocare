@@ -1,0 +1,28 @@
+<tr id="paciente-servico-row-{{ servico.id }}">
+    <td>{% if servico.id_paciente %}{{ servico.id_paciente.nome_completo }}{% else %}&nbsp;{% endif %}</td>
+    <td>{% if servico.id_tipo_servico %}{{ servico.id_tipo_servico.nome }}{% else %}&nbsp;{% endif %}</td>
+    <td>{% if servico.psicologo_responsavel_servico %}{{ servico.psicologo_responsavel_servico.nome_completo }}{% else
+        %}&nbsp;{% endif %}</td>
+    <td>{{ servico.data_inicio }}</td>
+    <td>{{ servico.data_fim }}</td>
+    <td>{{ servico.ativo }}</td>
+    <td class="actions">
+        <button class="btn-view icon-btn" data-mode="view" data-url="{% url 'paciente_servico:update' servico.id %}"
+            title="Visualizar">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path
+                    d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 110-10 5 5 0 010 10z"
+                    fill="#2b6cb0" />
+                <path d="M12 9a3 3 0 100 6 3 3 0 000-6z" fill="#2b6cb0" />
+            </svg>
+        </button>
+        <button class="btn-edit icon-btn" data-url="{% url 'paciente_servico:update' servico.id %}" title="Editar">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="#2b6cb0" />
+                <path
+                    d="M20.71 7.04a1.003 1.003 0 000-1.42l-2.34-2.34a1.003 1.003 0 00-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"
+                    fill="#2b6cb0" />
+            </svg>
+        </button>
+    </td>
+</tr>

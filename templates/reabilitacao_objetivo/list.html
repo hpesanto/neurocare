@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Objetivos da Reabilitação</h2>
+
+<div style="margin:12px 0;display:flex;gap:8px;align-items:center;">
+    <div style="margin-left:auto">
+        <input id="search" placeholder="Pesquisar..." style="padding:6px 8px;border-radius:6px;border:1px solid #ddd;" />
+    </div>
+</div>
+
+<div class="list-container">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Reabilitação</th>
+                <th>Descrição</th>
+                <th>Status</th>
+                <th>Comentário</th>
+                <th>Ações</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in items %}
+            {% include 'reabilitacao_objetivo/row.html' with item=item %}
+            {% empty %}
+            <tr>
+                <td colspan="5">Nenhum objetivo registrado.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td colspan="5" style="text-align:right;"><button id="btnNew" class="btn" data-url="{% url 'reabilitacao_objetivo:create' %}">Novo</button></td>
+            </tr>
+        </tfoot>
+    </table>
+</div>
+
+<div id="modal" style="display:none;"></div>
+
+{% endblock %}
+
+{% block scripts %}
+{% load static %}
+<script>
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest && e.target.closest('button[data-url]');
+        if (!btn) return;
+        e.preventDefault();
+        const url = btn.getAttribute('data-url');
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' })
+            .then(r => { if (!r.ok) throw new Error('Network response was not ok: ' + r.status); return r.text(); })
+            .then(html => {
+                const modal = document.getElementById('modal');
+                if (!modal) throw new Error('Modal container #modal not found');
+                modal.innerHTML = html;
+                modal.style.display = 'block';
+            })
+            .catch(err => { console.error('Error loading form', err); alert('Erro ao carregar o formulário. Veja o console para detalhes.'); });
+    });
+</script>
+{% endblock %}

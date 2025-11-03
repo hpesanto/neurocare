@@ -1,0 +1,36 @@
+<div id="modal-content">
+    <button id="modal-close" data-modal-close aria-label="Fechar">✕</button>
+    <div id="modal-body">
+        <form method="post"
+            action="{% if instance %}{% url 'usuarios:update' instance.id %}{% else %}{% url 'usuarios:create' %}{% endif %}">
+            {% csrf_token %}
+            <h3>{{ title }}</h3>
+            <div class="form-grid">
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="id_{{ field.name }}">{{ field.label }}</label>
+                    {# Normalize date inputs to ISO format so <input type="date"> accepts the value #}
+                    {% if field.name == 'data_nascimento' %}
+                    {# Render a plain date input with ISO value to avoid template-call syntax issues #}
+                    {% if instance and instance.data_nascimento %}
+                    <input type="date" name="{{ field.name }}" id="id_{{ field.name }}"
+                        value="{{ instance.data_nascimento|date:'Y-m-d' }}">
+                    {% else %}
+                    {{ field }}
+                    {% endif %}
+                    {% else %}
+                    {{ field }}
+                    {% endif %}
+                    {% if field.errors %}
+                    <div class="field-errors">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCancel" class="btn" data-modal-close>Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </form>
+    </div>
+</div>

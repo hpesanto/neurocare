@@ -1,0 +1,25 @@
+<tr>
+    <td>{{ item.id_reabilitacao }}</td>
+    <td>{{ item.descricao|truncatechars:80 }}</td>
+    <td>{{ item.id_status_objetivo }}</td>
+    <td>{{ item.comentario_status|truncatechars:80 }}</td>
+    <td style="white-space:nowrap;">
+        <button class="btn-view icon-btn" data-mode="view" data-url="{% url 'reabilitacao_objetivo:update' item.id %}"
+            title="Visualizar">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path
+                    d="M12 5C7 5 2.73 8.11 1 12c1.73 3.89 6 7 11 7s9.27-3.11 11-7c-1.73-3.89-6-7-11-7zm0 12a5 5 0 110-10 5 5 0 010 10z"
+                    fill="#2b6cb0" />
+                <path d="M12 9a3 3 0 100 6 3 3 0 000-6z" fill="#2b6cb0" />
+            </svg>
+        </button>
+        <button class="btn-edit icon-btn" data-url="{% url 'reabilitacao_objetivo:update' item.id %}" title="Editar">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M3 17.25V21h3.75L17.81 9.94l-3.75-3.75L3 17.25z" fill="#2b6cb0" />
+                <path
+                    d="M20.71 7.04a1.003 1.003 0 000-1.42l-2.34-2.34a1.003 1.003 0 00-1.42 0l-1.83 1.83 3.75 3.75 1.84-1.82z"
+                    fill="#2b6cb0" />
+            </svg>
+        </button>
+    </td>
+</tr>

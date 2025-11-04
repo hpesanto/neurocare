@@ -31,7 +31,8 @@ class TransacaoFinanceiraForm(forms.ModelForm):
             "id_psicologo": forms.Select(attrs={"class": "form-control"}),
             "id_tipo_transacao": forms.Select(attrs={"class": "form-control"}),
             "data_transacao": forms.DateInput(
-                attrs={"type": "date", "class": "form-control"}
+                format="%Y-%m-%d",
+                attrs={"type": "date", "class": "form-control"},
             ),
             "valor": forms.NumberInput(attrs={"class": "form-control", "step": "0.01"}),
             "id_forma_pagamento": forms.Select(attrs={"class": "form-control"}),
@@ -56,3 +57,33 @@ class TransacaoFinanceiraForm(forms.ModelForm):
             ),
             "id_venda_geral": forms.Select(attrs={"class": "form-control"}),
         }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Ensure date inputs use ISO format for <input type="date"> so the
+        # browser shows stored values when editing existing objects.
+        if "data_transacao" in self.fields:
+            self.fields["data_transacao"].input_formats = [
+                "%Y-%m-%d",
+                "%d/%m/%Y",
+            ]
+        # Ensure descriptive fields use a larger textarea widget visually
+        for fname, fld in self.fields.items():
+            lname = fname.lower()
+            if any(
+                p in lname
+                for p in (
+                    "motivo",
+                    "observ",
+                    "resultado",
+                    "conclus",
+                    "instrument",
+                    "hipotes",
+                    "recomend",
+                )
+            ):
+                attrs = getattr(fld.widget, "attrs", {})
+                classes = attrs.get("class", "")
+                if "large-textarea" not in classes:
+                    attrs["class"] = (classes + " large-textarea").strip()
+                attrs.setdefault("rows", "8")

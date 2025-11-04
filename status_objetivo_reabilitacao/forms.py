@@ -1,0 +1,36 @@
+from django import forms
+
+from .models import StatusObjetivoReabilitacao
+
+
+class StatusObjetivoReabilitacaoForm(forms.ModelForm):
+    class Meta:
+        model = StatusObjetivoReabilitacao
+        fields = ["nome"]
+        widgets = {
+            "nome": forms.TextInput(attrs={"class": "form-control", "maxlength": 100}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if "nome" in self.fields:
+            self.fields["nome"].label = "Nome do status"
+        for fname, fld in self.fields.items():
+            lname = fname.lower()
+            if any(
+                p in lname
+                for p in (
+                    "motivo",
+                    "observ",
+                    "resultado",
+                    "conclus",
+                    "instrument",
+                    "hipotes",
+                    "recomend",
+                )
+            ):
+                attrs = getattr(fld.widget, "attrs", {})
+                classes = attrs.get("class", "")
+                if "large-textarea" not in classes:
+                    attrs["class"] = (classes + " large-textarea").strip()
+                attrs.setdefault("rows", "8")

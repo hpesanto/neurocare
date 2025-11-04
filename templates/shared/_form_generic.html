@@ -1,0 +1,106 @@
+{% load static %}
+<div id="modal-content">
+    <button id="modal-close" aria-label="Fechar" data-modal-close="true"
+        style="position:absolute;right:8px;top:8px;background:transparent;border:none;font-size:18px;">×</button>
+    <div id="modal-body">
+        <h3>{{ title }}</h3>
+        <form method="post" action="{{ action }}" id="genericForm">
+            {% csrf_token %}
+            <style>
+                /* Layout: center the form content and make inputs full-width */
+                #modal-content {
+                    width: 90%;
+                    max-width: 900px;
+                    margin: 20px auto;
+                    background: #fff;
+                    padding: 18px;
+                    border-radius: 6px;
+                    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+                    position: relative;
+                }
+
+                /* Small, local styles to make descriptive fields more comfortable to edit */
+                .large-textarea {
+                    min-height: 220px;
+                    resize: vertical;
+                }
+
+                .form-group {
+                    margin-bottom: 12px;
+                }
+
+                .form-label {
+                    display: block;
+                    font-weight: 600;
+                    margin-bottom: 6px;
+                }
+
+                /* Ensure form controls occupy full horizontal space inside the centered container */
+                .form-control {
+                    width: 100%;
+                    box-sizing: border-box;
+                }
+
+                /* Buttons aligned on a row on smaller screens */
+                @media (max-width:480px) {
+                    .btn {
+                        display: block;
+                        width: 100%;
+                        margin-bottom: 8px;
+                    }
+                }
+            </style>
+
+            {# Explicitly mark descriptive fields to render larger - avoid calling Python methods in template #}
+            {% for field in form %}
+            <div class="form-group">
+                <label class="form-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {# Render the field normally; widget attributes (class/rows) are configured in the ModelForm #}
+                {{ field }}
+                {% if field.help_text %}<small class="help-text">{{ field.help_text }}</small>{% endif %}
+                {% if field.errors %}
+                <div class="errors">{{ field.errors }}</div>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            <div style="text-align:right;margin-top:8px;">
+                <button type="submit" class="btn">Salvar</button>
+                <button type="button" class="btn" id="btnCancel" data-modal-close="true">Fechar</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        (function () {
+            function getCookie(name) { const v = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith(name + '=')); if (!v) return null; return decodeURIComponent(v.split('=')[1]); }
+            const form = document.getElementById('genericForm');
+            if (form) {
+                form.addEventListener('submit', function (ev) {
+                    ev.preventDefault();
+                    const url = form.getAttribute('action') || window.location.href;
+                    const data = new FormData(form);
+                    fetch(url, { method: 'POST', body: data, credentials: 'same-origin', headers: { 'X-Requested-With': 'XMLHttpRequest', 'X-CSRFToken': getCookie('csrftoken') } })
+                        .then(r => { const ct = r.headers.get('content-type') || ''; if (ct && ct.includes('application/json')) return r.json(); return r.text(); })
+                        .then(resp => {
+                            if (typeof resp === 'object') {
+                                if (resp.errors) console.warn('Form errors (server):', resp.errors);
+                                if (resp.ok) {
+                                    if (resp.row_html) {
+                                        const tmp = document.createElement('tbody'); tmp.innerHTML = resp.row_html; const newRow = tmp.firstElementChild;
+                                        const tbody = document.querySelector('.list-container table tbody'); if (tbody && newRow) tbody.insertAdjacentElement('afterbegin', newRow);
+                                    }
+                                    const modal = document.getElementById('modal'); if (modal) { modal.style.display = 'none'; modal.innerHTML = ''; }
+                                } else {
+                                    const modal = document.getElementById('modal'); if (resp.form_html && modal) modal.innerHTML = resp.form_html;
+                                }
+                            } else {
+                                const modal = document.getElementById('modal'); if (modal) modal.innerHTML = resp;
+                            }
+                        }).catch(err => { console.error(err); alert('Erro ao salvar.'); });
+                });
+            }
+            setTimeout(() => { const first = document.querySelector('#modal-content form input, #modal-content form select, #modal-content form textarea'); if (first) first.focus(); }, 40);
+        })();
+    </script>
+</div>

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}Você saiu - NeuroCare{% endblock %}
+
+{% block content %}
+<h2>Você saiu com sucesso</h2>
+<p>Obrigado por utilizar o sistema. Se quiser entrar novamente, clique no botão abaixo.</p>
+<p><a class="button" href="{% url 'login' %}">Ir para Login</a></p>
+{% endblock %}

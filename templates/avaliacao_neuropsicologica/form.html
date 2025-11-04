@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>{{ title }}</h2>
+
+<div style="max-width:900px;margin:0 auto;">
+    {% include 'shared/_form_generic.html' with title=title action=action form=form %}
+</div>
+
+{% endblock %}

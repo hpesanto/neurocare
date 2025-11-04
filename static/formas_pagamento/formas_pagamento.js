@@ -2,19 +2,31 @@ document.addEventListener('DOMContentLoaded', function () {
     const modalContainer = document.getElementById('modal-container');
     const btnNew = document.getElementById('btnNew');
 
-    function openModal(html) {
+    function openModal(html, mode) {
         modalContainer.innerHTML = html;
         const modal = modalContainer.querySelector('form');
         const btnCancel = modalContainer.querySelector('#btnCancel');
         if (btnCancel) btnCancel.addEventListener('click', () => (modalContainer.innerHTML = ''));
-        modal.addEventListener('submit', submitForm);
+        if (modal) modal.addEventListener('submit', submitForm);
+        if (mode === 'view' && modal) {
+            try {
+                modal.querySelectorAll('input,select,textarea').forEach(n => { try { n.setAttribute('disabled', 'disabled'); } catch (e) { } });
+                modal.querySelectorAll('button, input[type=submit]').forEach(n => {
+                    try {
+                        if (n.tagName.toLowerCase() === 'button') {
+                            if ((n.type || '').toLowerCase() === 'submit') { n.style.display = 'none'; n.setAttribute('disabled', 'disabled'); }
+                        } else { n.style.display = 'none'; n.setAttribute('disabled', 'disabled'); }
+                    } catch (e) { }
+                });
+            } catch (e) { console.error('formas_pagamento.openModal view-mode error', e); }
+        }
     }
 
-    async function fetchForm(url) {
+    async function fetchForm(url, mode) {
         const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' } });
         if (res.ok) {
             const html = await res.text();
-            openModal(html);
+            openModal(html, mode);
         } else {
             console.error('Failed to fetch form', res.status);
         }
@@ -59,6 +71,9 @@ document.addEventListener('DOMContentLoaded', function () {
     function attachEditHandlers(root = document) {
         root.querySelectorAll('.btn-edit').forEach((b) =>
             b.addEventListener('click', (e) => fetchForm(e.currentTarget.dataset.url))
+        );
+        root.querySelectorAll('.btn-view').forEach((b) =>
+            b.addEventListener('click', (e) => fetchForm(e.currentTarget.dataset.url, 'view'))
         );
     }
 

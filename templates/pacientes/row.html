@@ -1,7 +1,8 @@
+{% load phone_filters %}
 <tr id="paciente-row-{{ paciente.id }}">
     <td>{{ paciente.nome_completo }}</td>
     <td>{{ paciente.cpf }}</td>
-    <td>{{ paciente.tel_1 }}</td>
+    <td>{{ paciente.telefone_principal|phone_mask }}</td>
     <td>{{ paciente.email }}</td>
     <td class="actions">
         <button class="btn-edit icon-btn" data-url="{% url 'pacientes:update' paciente.id %}" title="Editar">
@@ -27,7 +28,8 @@
 </tr>
 <tr class="paciente-details" id="paciente-details-{{ paciente.id }}" style="display:none;">
     <td colspan="5">
-        <div style="padding:8px 12px;color:#555">Detalhes: CPF {{ paciente.cpf }} — Endereço: {{ paciente.logradouro }}
-            {{ paciente.num_fachada }} {{ paciente.complemento }}</div>
+        <div style="padding:8px 12px;color:#555">Detalhes: CPF {{ paciente.cpf }} — Endereço: {{ paciente.endereco_rua
+            }}
+            {{ paciente.endereco_numero }} {{ paciente.endereco_complemento }}</div>
     </td>
 </tr>

@@ -13,17 +13,56 @@
     document.addEventListener('click', function (e) {
         const openBtn = e.target.closest && e.target.closest('[data-url]');
         if (openBtn) {
-            // If this button is handled by a page-specific modal script (e.g. page-level handlers), skip
+            // If this button is handled by a page-specific modal script, skip handling here.
+            // Page scripts added by us set a sentinel property `_spAttached = true` or may
+            // set `data-page-handled="true"`. If neither is present, fall back to the
+            // global handler so pages without page-specific JS still work.
             try {
-                if (openBtn.matches && openBtn.matches('#btnNew, .btn-edit, .btn-view')) return;
+                if (openBtn.matches && openBtn.matches('#btnNew, .btn-edit, .btn-view')) {
+                    const hasPageHandler = !!openBtn._spAttached || (openBtn.dataset && openBtn.dataset.pageHandled === 'true');
+                    if (hasPageHandler) return;
+                }
             } catch (err) { /* ignore match errors */ }
             e.preventDefault();
             const url = openBtn.getAttribute('data-url');
+            // propagate optional mode (e.g. view) to the modal container so loaded content
+            // can be adjusted (disabled/hide submit) after insertion
+            const modalEl = qs('#modal');
+            if (modalEl) {
+                if (openBtn.dataset && openBtn.dataset.mode) modalEl.dataset.mode = openBtn.dataset.mode; else delete modalEl.dataset.mode;
+            }
             fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' })
                 .then(r => { if (!r.ok) throw new Error('Network response was not ok: ' + r.status); return r.text(); })
                 .then(html => {
                     const modal = qs('#modal'); if (!modal) throw new Error('Modal container #modal not found');
                     modal.innerHTML = html; modal.style.display = 'block';
+                    // If modal was opened in view-only mode, disable inputs and hide submit buttons.
+                    try {
+                        if (modal.dataset && modal.dataset.mode === 'view') {
+                            const form = modal.querySelector('form');
+                            if (form) {
+                                // disable form controls
+                                form.querySelectorAll('input,select,textarea').forEach(n => { try { n.setAttribute('disabled', 'disabled'); } catch (e) { } });
+                                // hide or disable submit buttons (covers buttons without explicit type attr)
+                                form.querySelectorAll('button, input[type=submit]').forEach(n => {
+                                    try {
+                                        const tag = n.tagName.toLowerCase();
+                                        if (tag === 'button') {
+                                            // DOM property .type reflects default ("submit") when not set
+                                            if ((n.type || '').toLowerCase() === 'submit') {
+                                                n.style.display = 'none';
+                                                n.setAttribute('disabled', 'disabled');
+                                            }
+                                        } else {
+                                            // input[type=submit]
+                                            n.style.display = 'none';
+                                            n.setAttribute('disabled', 'disabled');
+                                        }
+                                    } catch (e) { }
+                                });
+                            }
+                        }
+                    } catch (err) { console.error('modal_ajax: error applying view-mode', err); }
                 })
                 .catch(err => { console.error('modal_ajax: error loading form', err); alert('Erro ao carregar o formulário. Veja o console para detalhes.'); });
             return;

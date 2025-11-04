@@ -39,4 +39,7 @@
 {% load static %}
 {# modal_ajax.js is loaded globally from base.html; keep this block for page-specific scripts if needed #}
 
+<script
+    src="{% static 'status_pagamento/status_pagamento.js' %}{% if static_version %}?v={{ static_version }}{% endif %}"></script>
+
 {% endblock %}

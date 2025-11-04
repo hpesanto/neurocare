@@ -1,8 +1,9 @@
+{% load phone_filters %}
 <div class="paciente-card card" style="width:240px;display:inline-block;vertical-align:top">
     <div style="padding:10px">
         <h4 style="margin:0 0 6px 0">{{ paciente.nome_completo }}</h4>
         <div style="font-size:0.9rem;color:#666">CPF: {{ paciente.cpf }}</div>
-        <div style="font-size:0.9rem;color:#666">Tel: {{ paciente.tel_1 }}</div>
+        <div style="font-size:0.9rem;color:#666">Tel: {{ paciente.telefone_principal|phone_mask }}</div>
         <div style="margin-top:8px;text-align:right">
             <button class="btn-view icon-btn" data-url="{% url 'pacientes:update' paciente.id %}" title="Visualizar">
                 <svg class="icon-sm" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"

@@ -11,13 +11,17 @@ document.addEventListener('DOMContentLoaded', function () {
         if (btnCancel) btnCancel.addEventListener('click', () => (modalContainer.innerHTML = ''));
         // if view-only mode, disable inputs and hide submit
         if (mode === 'view') {
-            const nodes = modalContainer.querySelectorAll('input,select,textarea,button');
-            nodes.forEach(n => {
-                if (n.tagName.toLowerCase() === 'button' && n.type !== 'submit') return;
-                try { n.setAttribute('disabled', 'disabled'); } catch (e) { }
-            });
-            const submit = modalContainer.querySelector('form button[type=submit]');
-            if (submit) submit.style.display = 'none';
+            const form = modalContainer.querySelector('form');
+            if (form) {
+                form.querySelectorAll('input,select,textarea').forEach(n => { try { n.setAttribute('disabled', 'disabled'); } catch (e) { } });
+                form.querySelectorAll('button, input[type=submit]').forEach(n => {
+                    try {
+                        if (n.tagName.toLowerCase() === 'button') {
+                            if ((n.type || '').toLowerCase() === 'submit') { n.style.display = 'none'; n.setAttribute('disabled', 'disabled'); }
+                        } else { n.style.display = 'none'; n.setAttribute('disabled', 'disabled'); }
+                    } catch (e) { }
+                });
+            }
         }
         if (modal) modal.addEventListener('submit', submitForm);
     }

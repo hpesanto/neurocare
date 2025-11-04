@@ -15,13 +15,17 @@
         modal.style.display = 'block';
         bindForm();
         if (modal.dataset && modal.dataset.mode === 'view') {
-            const nodes = qs('#modalContent').querySelectorAll('input,select,textarea,button');
-            nodes.forEach(n => {
-                if (n.tagName.toLowerCase() === 'button' && n.type !== 'submit') return;
-                try { n.setAttribute('disabled', 'disabled'); } catch (e) { }
-            });
-            const submit = qs('#modalContent form button[type=submit]');
-            if (submit) submit.style.display = 'none';
+            const form = qs('#modalContent form');
+            if (form) {
+                form.querySelectorAll('input,select,textarea').forEach(n => { try { n.setAttribute('disabled', 'disabled'); } catch (e) { } });
+                form.querySelectorAll('button, input[type=submit]').forEach(n => {
+                    try {
+                        if (n.tagName.toLowerCase() === 'button') {
+                            if ((n.type || '').toLowerCase() === 'submit') { n.style.display = 'none'; n.setAttribute('disabled', 'disabled'); }
+                        } else { n.style.display = 'none'; n.setAttribute('disabled', 'disabled'); }
+                    } catch (e) { }
+                });
+            }
         }
         const cancel = qs('#btnCancel');
         if (cancel) cancel.addEventListener('click', hideModal);

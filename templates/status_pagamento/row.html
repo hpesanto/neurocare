@@ -19,7 +19,12 @@
                     fill="#2b6cb0" />
             </svg>
         </button>
-        <button class="btn btn-sm btn-outline-danger" style="margin-left:8px;"
-            data-delete-url="{% url 'status_pagamento:delete' item.id %}">Excluir</button>
+        <button class="btn btn-sm btn-outline-danger icon-btn btn-delete" title="Excluir"
+            data-delete-url="{% url 'status_pagamento:delete' item.id %}">
+            <svg class="icon-sm" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <path d="M6 7h12v13a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2V7z" fill="#e53e3e" />
+                <path d="M9 3h6v2H9z" fill="#e53e3e" />
+            </svg>
+        </button>
     </td>
 </tr>

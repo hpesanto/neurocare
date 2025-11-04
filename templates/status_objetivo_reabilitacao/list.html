@@ -5,7 +5,8 @@
 
 <div style="margin:12px 0;display:flex;gap:8px;align-items:center;">
     <div style="margin-left:auto">
-        <input id="search-status" placeholder="Pesquisar por status..." style="padding:6px 8px;border-radius:6px;border:1px solid #ddd;" />
+        <input id="search-status" placeholder="Pesquisar por status..."
+            style="padding:6px 8px;border-radius:6px;border:1px solid #ddd;" />
     </div>
 </div>
 
@@ -28,13 +29,14 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="2" style="text-align:right;"><button id="btnNewStatus" class="btn" data-url="{% url 'status:create' %}">Novo</button></td>
+                <td colspan="2" style="text-align:right;"><button id="btnNewStatus" class="btn"
+                        data-url="{% url 'status:create' %}">Novo</button></td>
             </tr>
         </tfoot>
     </table>
 </div>
 
-<div id="modal" style="display:none;"></div>
+
 
 {% endblock %}
 

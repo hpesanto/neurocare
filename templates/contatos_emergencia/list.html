@@ -28,10 +28,25 @@
     </tbody>
 </table>
 
-<!-- Modal container -->
-<div id="modal-container"></div>
+{% endblock %}
 
+{# Use global #modal container from base.html; delegate clicks to load partials via AJAX #}
+{% block scripts %}
 {% load static %}
-<script src="{% static 'contatos_emergencia/contatos_emergencia.js' %}"></script>
-
+<script>
+    document.addEventListener('click', function (e) {
+        const btn = (e.target.closest && (e.target.closest('button[data-url]') || e.target.closest('button[data-create-url]')));
+        if (!btn) return;
+        e.preventDefault();
+        const url = btn.getAttribute('data-url') || btn.getAttribute('data-create-url');
+        if (!url) return;
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' })
+            .then(r => { if (!r.ok) throw new Error('Network response was not ok: ' + r.status); return r.text(); })
+            .then(html => {
+                const modal = document.getElementById('modal'); if (!modal) throw new Error('Modal container #modal not found');
+                modal.innerHTML = html; modal.style.display = 'block';
+            })
+            .catch(err => { console.error('contatos_emergencia: error loading form', err); alert('Erro ao carregar o formulário. Veja o console para detalhes.'); });
+    });
+</script>
 {% endblock %}

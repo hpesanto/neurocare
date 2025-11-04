@@ -25,10 +25,33 @@
     </tbody>
 </table>
 
-<!-- Modal container -->
-<div id="modal-container"></div>
-
+{% block scripts %}
 {% load static %}
-<script src="{% static 'formas_pagamento/formas_pagamento.js' %}"></script>
-
+<script>
+    // Delegate clicks for create/edit/view buttons and load the form into the
+    // global #modal container via AJAX (same pattern used by Evolução Clínica).
+    document.addEventListener('click', function (e) {
+        const btn = (e.target.closest && (e.target.closest('button[data-url]') || e.target.closest('button[data-create-url]')));
+        if (!btn) return;
+        e.preventDefault();
+        const url = btn.getAttribute('data-url') || btn.getAttribute('data-create-url');
+        if (!url) return;
+        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' })
+            .then(r => {
+                if (!r.ok) throw new Error('Network response was not ok: ' + r.status);
+                return r.text();
+            })
+            .then(html => {
+                const modal = document.getElementById('modal');
+                if (!modal) throw new Error('Modal container #modal not found');
+                modal.innerHTML = html;
+                modal.style.display = 'block';
+            })
+            .catch(err => {
+                console.error('formas_pagamento: error loading form', err);
+                alert('Erro ao carregar o formulário. Veja o console para detalhes.');
+            });
+    });
+</script>
+{% endblock %}
 {% endblock %}

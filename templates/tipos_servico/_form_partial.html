@@ -1,20 +1,26 @@
-<form method="post"
-    action="{% if instance %}{% url 'tipos_servico:update' instance.id %}{% else %}{% url 'tipos_servico:create' %}{% endif %}">
-    {% csrf_token %}
-    <h3>{{ title }}</h3>
-    <div class="form-grid">
-        {% for field in form %}
-        <div class="form-group">
-            <label for="id_{{ field.name }}">{{ field.label }}</label>
-            {{ field }}
-            {% if field.errors %}
-            <div class="field-errors">{{ field.errors }}</div>
-            {% endif %}
-        </div>
-        {% endfor %}
+<div id="modal-content">
+    <button id="modal-close" aria-label="Fechar" data-modal-close="true"
+        style="position:absolute;right:8px;top:8px;background:transparent;border:none;font-size:18px;">×</button>
+    <div id="modal-body">
+        <h3>{{ title }}</h3>
+        <form method="post"
+            action="{% if instance %}{% url 'tipos_servico:update' instance.id %}{% else %}{% url 'tipos_servico:create' %}{% endif %}">
+            {% csrf_token %}
+            <div class="form-grid">
+                {% for field in form %}
+                <div class="form-group">
+                    <label for="id_{{ field.name }}">{{ field.label }}</label>
+                    {{ field }}
+                    {% if field.errors %}
+                    <div class="field-errors">{{ field.errors }}</div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="btnCancel" class="btn" data-modal-close="true">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Salvar</button>
+            </div>
+        </form>
     </div>
-    <div class="modal-footer">
-        <button type="button" id="btnCancel" class="btn">Cancelar</button>
-        <button type="submit" class="btn btn-primary">Salvar</button>
-    </div>
-</form>
+</div>

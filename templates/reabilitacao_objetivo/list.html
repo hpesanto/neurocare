@@ -5,7 +5,8 @@
 
 <div style="margin:12px 0;display:flex;gap:8px;align-items:center;">
     <div style="margin-left:auto">
-        <input id="search" placeholder="Pesquisar..." style="padding:6px 8px;border-radius:6px;border:1px solid #ddd;" />
+        <input id="search" placeholder="Pesquisar..."
+            style="padding:6px 8px;border-radius:6px;border:1px solid #ddd;" />
     </div>
 </div>
 
@@ -31,13 +32,14 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="5" style="text-align:right;"><button id="btnNew" class="btn" data-url="{% url 'reabilitacao_objetivo:create' %}">Novo</button></td>
+                <td colspan="5" style="text-align:right;"><button id="btnNew" class="btn"
+                        data-url="{% url 'reabilitacao_objetivo:create' %}">Novo</button></td>
             </tr>
         </tfoot>
     </table>
 </div>
 
-<div id="modal" style="display:none;"></div>
+
 
 {% endblock %}
 

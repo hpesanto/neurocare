@@ -81,4 +81,4 @@ document.addEventListener('DOMContentLoaded', function () {
     const observer = new MutationObserver(() => attachEditHandlers());
     observer.observe(document.querySelector('#formas-table tbody'), { childList: true, subtree: true });
 });
-qs('#modalContent').innerHTML = qs('#modalSpinner').outerHTML || '';
+

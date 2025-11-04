@@ -3,6 +3,14 @@
     function qs(sel, root = document) { return root.querySelector(sel); }
     function qsa(sel, root = document) { return Array.from(root.querySelectorAll(sel)); }
 
+    // Mark buttons handled by this page so the global modal handler (modal_ajax.js)
+    // does not also process the same click and inject a second modal.
+    try {
+        qsa('#btnNew, .btn-edit, .btn-view').forEach(el => {
+            try { el._spAttached = true; } catch (e) { }
+            try { if (el.dataset) el.dataset.pageHandled = 'true'; } catch (e) { }
+        });
+    } catch (e) { /* ignore */ }
     function getCookie(name) {
         const v = document.cookie.split(';').map(c => c.trim()).find(c => c.startsWith(name + '='));
         if (!v) return null; return decodeURIComponent(v.split('=')[1]);

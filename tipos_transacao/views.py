@@ -1,5 +1,6 @@
 import logging
 
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -23,7 +24,6 @@ def create_tipo(request):
         if form.is_valid():
             saved = form.save()
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
                 from django.template.loader import render_to_string
 
                 row_html = render_to_string(
@@ -34,7 +34,6 @@ def create_tipo(request):
         else:
             logger.warning("Tipo create form invalid: %s", form.errors.as_json())
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
                 from django.template.loader import render_to_string
 
                 form_html = render_to_string(
@@ -78,7 +77,6 @@ def update_tipo(request, pk):
         if form.is_valid():
             saved = form.save()
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
                 from django.template.loader import render_to_string
 
                 row_html = render_to_string(
@@ -89,12 +87,11 @@ def update_tipo(request, pk):
         else:
             logger.warning("Tipo update invalid (pk=%s): %s", pk, form.errors.as_json())
             if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
                 from django.template.loader import render_to_string
 
                 form_html = render_to_string(
                     "tipos_transacao/_form_partial.html",
-                    {"form": form, "title": f"Editar Tipo", "action": request.path},
+                    {"form": form, "title": "Editar Tipo", "action": request.path},
                     request=request,
                 )
                 return JsonResponse(
@@ -114,12 +111,29 @@ def update_tipo(request, pk):
             "tipos_transacao/_form_partial.html",
             {
                 "form": form,
-                "title": f"Editar Tipo",
+                "title": "Editar Tipo",
                 "instance": item,
                 "action": request.path,
             },
         )
 
     return render(
-        request, "tipos_transacao/form.html", {"form": form, "title": f"Editar Tipo"}
+        request, "tipos_transacao/form.html", {"form": form, "title": "Editar Tipo"}
     )
+
+
+def delete_tipo(request, pk):
+    """Handle deletion of a TipoTransacaoFinanceira. Accepts POST (AJAX or normal).
+
+    Returns JSON {ok: True, id: <pk>} for AJAX POST, otherwise redirects to list.
+    """
+    item = get_object_or_404(TipoTransacaoFinanceira, pk=pk)
+    if request.method == "POST":
+        item.delete()
+        if request.headers.get("x-requested-with") == "XMLHttpRequest":
+            return JsonResponse({"ok": True, "id": str(pk)})
+        return redirect(reverse("tipos_transacao:list"))
+
+    if request.headers.get("x-requested-with") == "XMLHttpRequest":
+        return JsonResponse({"ok": False}, status=405)
+    return redirect(reverse("tipos_transacao:list"))

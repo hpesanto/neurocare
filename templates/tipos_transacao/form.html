@@ -15,7 +15,10 @@
             {% endif %}
         </div>
         {% endfor %}
-        <div style="text-align:right;margin-top:8px;"><button type="submit" class="btn">Salvar</button></div>
+        <div style="text-align:right;margin-top:8px;">
+            <button type="submit" class="btn">Salvar</button>
+            <a href="{% url 'tipos_transacao:list' %}" class="btn btn-secondary" style="margin-left:8px;">Cancelar</a>
+        </div>
     </form>
 </div>
 

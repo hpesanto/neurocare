@@ -2,12 +2,8 @@
 
 {% block content %}
 <h2>Tipos de Transação Financeira</h2>
-
-<div style="margin:12px 0;display:flex;gap:8px;align-items:center;">
-    <div style="margin-left:auto">
-        <input id="search-tipo" placeholder="Pesquisar por tipo..."
-            style="padding:6px 8px;border-radius:6px;border:1px solid #ddd;" />
-    </div>
+<div style="display:flex;gap:12px;align-items:center;margin-bottom:8px;">
+    <div style="font-size:0.9rem;color:#666">Total: <strong>{{ items|length }}</strong></div>
 </div>
 
 <div class="list-container">
@@ -15,7 +11,7 @@
         <thead>
             <tr>
                 <th>Nome</th>
-                <th>Ações</th>
+                <th style="width:160px">Ações</th>
             </tr>
         </thead>
         <tbody>
@@ -29,7 +25,7 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="2" style="text-align:right;"><button id="btnNewTipo" class="btn"
+                <td colspan="2" style="text-align:right;"><button id="btnNewTipo" class="btn btn-primary"
                         data-url="{% url 'tipos_transacao:create' %}">Novo</button></td>
             </tr>
         </tfoot>
@@ -37,33 +33,69 @@
 </div>
 
 <div id="modal" style="display:none;"></div>
-
 {% endblock %}
 
 {% block scripts %}
 {% load static %}
+{# rely on global modal_ajax.js to handle data-url and data-delete-url events #}
 <script>
-    document.addEventListener('click', function (e) {
-        const btn = e.target.closest && e.target.closest('button[data-url]');
-        if (!btn) return;
-        e.preventDefault();
-        const url = btn.getAttribute('data-url');
-        console.debug('TiposTransacao: loading form from', url);
-        fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' })
-            .then(r => {
-                if (!r.ok) throw new Error('Network response was not ok: ' + r.status);
-                return r.text();
-            })
-            .then(html => {
-                const modal = document.getElementById('modal');
-                if (!modal) throw new Error('Modal container #modal not found');
-                modal.innerHTML = html;
-                modal.style.display = 'block';
-            })
-            .catch(err => {
-                console.error('TiposTransacao: error loading form', err);
-                alert('Erro ao carregar o formulário. Veja o console para detalhes.');
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('modal');
+        const btnNew = document.getElementById('btnNewTipo');
+
+        function disableViewMode(modalEl) {
+            try {
+                const form = modalEl.querySelector('form');
+                if (!form) return;
+                form.querySelectorAll('input,select,textarea').forEach(n => { try { n.setAttribute('disabled', 'disabled'); } catch (e) { } });
+                form.querySelectorAll('button, input[type=submit]').forEach(n => {
+                    try {
+                        const tag = n.tagName.toLowerCase();
+                        if (tag === 'button') {
+                            if ((n.type || '').toLowerCase() === 'submit') { n.style.display = 'none'; n.setAttribute('disabled', 'disabled'); }
+                        } else {
+                            n.style.display = 'none'; n.setAttribute('disabled', 'disabled');
+                        }
+                    } catch (e) { }
+                });
+            } catch (e) { console.error('tipos_transacao: disableViewMode error', e); }
+        }
+
+        async function fetchForm(url, mode) {
+            try {
+                const res = await fetch(url, { headers: { 'X-Requested-With': 'XMLHttpRequest' }, credentials: 'same-origin' });
+                if (!res.ok) { console.error('TiposTransacao: fetch failed', res.status); return; }
+                const html = await res.text();
+                if (!modal) { console.error('TiposTransacao: modal container #modal not found'); return; }
+                if (mode) modal.dataset.mode = mode; else delete modal.dataset.mode;
+                modal.innerHTML = html; modal.style.display = 'block';
+                if (mode === 'view') disableViewMode(modal);
+            } catch (err) { console.error('TiposTransacao: fetchForm error', err); alert('Erro ao carregar o formulário. Veja o console para detalhes.'); }
+        }
+
+        if (btnNew) btnNew.addEventListener('click', (e) => {
+            const url = btnNew.dataset.url || btnNew.getAttribute('data-url');
+            if (url) fetchForm(url);
+        });
+
+        // attach handlers to rows (will be re-applied when rows are mutated)
+        function attachHandlers(root = document) {
+            root.querySelectorAll('.btn-edit').forEach((b) => {
+                if (b._spAttached) return; b._spAttached = true;
+                b.addEventListener('click', (e) => { e.preventDefault(); fetchForm(e.currentTarget.dataset.url); });
             });
+            root.querySelectorAll('.btn-view').forEach((b) => {
+                if (b._spAttached) return; b._spAttached = true;
+                b.addEventListener('click', (e) => { e.preventDefault(); fetchForm(e.currentTarget.dataset.url, 'view'); });
+            });
+        }
+
+        attachHandlers();
+        const tbody = document.querySelector('.list-container table tbody');
+        if (tbody) {
+            const obs = new MutationObserver(() => attachHandlers(tbody));
+            obs.observe(tbody, { childList: true, subtree: true });
+        }
     });
 </script>
 {% endblock %}

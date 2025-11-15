@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,6 +11,7 @@ from .models import AvaliacaoNeuropsicologica
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def list_avaliacao(request):
     qs = AvaliacaoNeuropsicologica.objects.all().order_by("-data_avaliacao")
     form = AvaliacaoNeuropsicologicaForm()
@@ -19,6 +22,7 @@ def list_avaliacao(request):
     )
 
 
+@login_required
 def create_avaliacao(request):
     if request.method == "POST":
         form = AvaliacaoNeuropsicologicaForm(request.POST)
@@ -83,6 +87,7 @@ def create_avaliacao(request):
     )
 
 
+@login_required
 def update_avaliacao(request, pk):
     item = get_object_or_404(AvaliacaoNeuropsicologica, pk=pk)
     if request.method == "POST":

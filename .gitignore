@@ -1,9 +1,13 @@
 # Ambientes virtuais
 psico/
+venv/
+env/
 
 # Arquivos de cache e compilação Python
 __pycache__/
 *.pyc
+*.pyo
+*.pyd
 
 # Configurações de IDEs e editores (ex: VS Code, PyCharm)
 .vscode/
@@ -18,3 +22,11 @@ db.sqlite3
 
 # Arquivos de sistema operacional
 Thumbs.db # Windows
+.DS_Store # macOS
+
+# Secrets e variáveis de ambiente (CRÍTICO!)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key

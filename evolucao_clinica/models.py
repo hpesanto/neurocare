@@ -26,4 +26,3 @@ class EvolucaoClinica(models.Model):
 
     def __str__(self):
         return f"{self.id_paciente} - {self.data_sessao} ({self.id_psicologo})"
-        return f"{self.id_paciente} - {self.data_sessao} ({self.id_psicologo})"

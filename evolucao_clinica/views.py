@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,6 +11,7 @@ from .models import EvolucaoClinica
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def list_evolucao(request):
     qs = EvolucaoClinica.objects.all().order_by("-data_sessao", "-hora_sessao")
     form = EvolucaoClinicaForm()
@@ -17,6 +20,7 @@ def list_evolucao(request):
     )
 
 
+@login_required
 def create_evolucao(request):
     if request.method == "POST":
         form = EvolucaoClinicaForm(request.POST)
@@ -74,6 +78,7 @@ def create_evolucao(request):
     )
 
 
+@login_required
 def update_evolucao(request, pk):
     item = get_object_or_404(EvolucaoClinica, pk=pk)
     if request.method == "POST":

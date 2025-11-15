@@ -19,4 +19,23 @@ git branch -M main
 # Substitua a URL pela URL do seu repositório remoto recém-criado
 git remote add origin https://github.com/hpesanto/neurocare.git
 
+git status
+git commit -m "Initial project setup for NeuroCare System"
+git push -u origin main
+git branch
 
+
+### criando super usuário para acesso ao painel
+Criar superusuário (administrador do Django): python manage.py createsuperuser (use para acessar o painel de administração futuramente).
+
+Teste Inicial:
+Rodar o servidor de desenvolvimento: python neurocare_system/manage.py runserver
+Acesse http://127.0.0.1:8000/admin/ no seu navegador. Você deve ver a tela de login. Faça login com o superusuário.
+
+
+usando o cli no powershell
+
+copilot --help
+copilot --model (nome do modelo) se informar errado ele lista os modelos disponíveis
+
+copilot --model claude-haiku-4.5 (atualmente esse é o modelo mais barato)

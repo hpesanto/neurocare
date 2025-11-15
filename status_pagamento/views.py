@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.http import JsonResponse
@@ -10,6 +12,7 @@ from .models import StatusPagamento
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def list_status_pagamento(request):
     qs = StatusPagamento.objects.all().order_by("nome")
     form = StatusPagamentoForm()
@@ -24,6 +27,7 @@ def _render_row(obj, request=None):
     return render_to_string("status_pagamento/row.html", {"item": obj}, request=request)
 
 
+@login_required
 def create_status(request):
     if request.method == "POST":
         form = StatusPagamentoForm(request.POST)
@@ -77,6 +81,7 @@ def create_status(request):
     )
 
 
+@login_required
 def update_status(request, pk):
     item = get_object_or_404(StatusPagamento, pk=pk)
     if request.method == "POST":
@@ -136,6 +141,7 @@ def update_status(request, pk):
     )
 
 
+@login_required
 def delete_status(request, pk):
     """Handle deletion of a StatusPagamento. Accepts POST (AJAX or normal).
 

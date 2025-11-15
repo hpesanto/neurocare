@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -8,6 +10,7 @@ from profissionais.models import Profissional
 from .forms import UsuarioForm
 
 
+@login_required
 def list_usuarios(request):
     logger = logging.getLogger(__name__)
     qs = Profissional.objects.all().order_by("nome")
@@ -16,6 +19,7 @@ def list_usuarios(request):
     return render(request, "usuarios/list.html", {"usuarios": usuarios, "form": form})
 
 
+@login_required
 def create_usuario(request):
     if request.method == "POST":
         form = UsuarioForm(request.POST)
@@ -56,6 +60,7 @@ def create_usuario(request):
     )
 
 
+@login_required
 def update_usuario(request, pk):
     usuario = get_object_or_404(Profissional, pk=pk)
     if request.method == "POST":

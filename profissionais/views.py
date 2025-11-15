@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -5,6 +7,7 @@ from .forms import ProfissionalForm
 from .models import Profissional
 
 
+@login_required
 def list_profissionais(request):
     profissionais = Profissional.objects.all().order_by("nome")
     form = ProfissionalForm()
@@ -15,6 +18,7 @@ def list_profissionais(request):
     )
 
 
+@login_required
 def create_profissional(request):
     if request.method == "POST":
         form = ProfissionalForm(request.POST)
@@ -55,6 +59,7 @@ def create_profissional(request):
     )
 
 
+@login_required
 def update_profissional(request, pk):
     profissional = get_object_or_404(Profissional, pk=pk)
     if request.method == "POST":

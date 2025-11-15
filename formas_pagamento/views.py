@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -6,6 +8,7 @@ from pacientes.models import FormaPagamento
 from .forms import FormaPagamentoForm
 
 
+@login_required
 def list_formas(request):
     formas = FormaPagamento.objects.all().order_by("nome")
     form = FormaPagamentoForm()
@@ -14,6 +17,7 @@ def list_formas(request):
     )
 
 
+@login_required
 def create_forma(request):
     if request.method == "POST":
         form = FormaPagamentoForm(request.POST)
@@ -56,6 +60,7 @@ def create_forma(request):
     )
 
 
+@login_required
 def update_forma(request, pk):
     forma = get_object_or_404(FormaPagamento, pk=pk)
     if request.method == "POST":

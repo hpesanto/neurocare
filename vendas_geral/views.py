@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,12 +11,14 @@ from .models import VendaGeral, VendaGeralItem
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def list_venda_geral(request):
     qs = VendaGeral.objects.all().order_by("-data_venda")
     form = VendaGeralForm()
     return render(request, "vendas_geral/list.html", {"items": list(qs), "form": form})
 
 
+@login_required
 def create_venda_geral(request):
     if request.method == "POST":
         form = VendaGeralForm(request.POST)
@@ -69,6 +73,7 @@ def create_venda_geral(request):
     )
 
 
+@login_required
 def update_venda_geral(request, pk):
     item = get_object_or_404(VendaGeral, pk=pk)
     if request.method == "POST":
@@ -131,6 +136,7 @@ def update_venda_geral(request, pk):
     )
 
 
+@login_required
 def list_venda_geral_itens(request):
     qs = VendaGeralItem.objects.all().order_by("-data_criacao")
     form = VendaGeralItemForm()
@@ -139,6 +145,7 @@ def list_venda_geral_itens(request):
     )
 
 
+@login_required
 def create_venda_geral_item(request):
     if request.method == "POST":
         form = VendaGeralItemForm(request.POST)
@@ -195,6 +202,7 @@ def create_venda_geral_item(request):
     )
 
 
+@login_required
 def update_venda_geral_item(request, pk):
     item = get_object_or_404(VendaGeralItem, pk=pk)
     if request.method == "POST":

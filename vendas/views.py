@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,6 +11,7 @@ from .models import VendaVinculada
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def list_vendas(request):
     qs = VendaVinculada.objects.all().order_by("-data_venda")
     form = VendaVinculadaForm()
@@ -17,6 +20,7 @@ def list_vendas(request):
     )
 
 
+@login_required
 def create_venda(request):
     if request.method == "POST":
         form = VendaVinculadaForm(request.POST)
@@ -73,6 +77,7 @@ def create_venda(request):
     )
 
 
+@login_required
 def update_venda(request, pk):
     item = get_object_or_404(VendaVinculada, pk=pk)
     if request.method == "POST":

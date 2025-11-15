@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -6,12 +8,14 @@ from pacientes.models import Produto
 from .forms import ProdutoForm
 
 
+@login_required
 def list_produtos(request):
     produtos = Produto.objects.select_related("id_tipo_produto").all().order_by("nome")
     form = ProdutoForm()
     return render(request, "produtos/list.html", {"produtos": produtos, "form": form})
 
 
+@login_required
 def create_produto(request):
     if request.method == "POST":
         form = ProdutoForm(request.POST)
@@ -52,6 +56,7 @@ def create_produto(request):
     )
 
 
+@login_required
 def update_produto(request, pk):
     produto = get_object_or_404(Produto, pk=pk)
     if request.method == "POST":

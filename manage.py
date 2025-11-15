@@ -13,8 +13,8 @@ def main():
             import debugpy
 
             port = int(os.environ.get("NEUROCARE_DEBUGPY_PORT", 5678))
-            debugpy.listen(("0.0.0.0", port))
-            print(f"debugpy listening on 0.0.0.0:{port} — not waiting for client")
+            debugpy.listen(("127.0.0.1", port))
+            print(f"debugpy listening on 127.0.0.1:{port} — not waiting for client")
         except Exception as exc:
             print("Could not start debugpy:", exc)
     try:

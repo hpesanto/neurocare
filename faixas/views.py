@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -6,12 +8,14 @@ from pacientes.models import FaixaEtaria
 from .forms import FaixaEtariaForm
 
 
+@login_required
 def list_faixas(request):
     faixas = FaixaEtaria.objects.all().order_by("nome")
     form = FaixaEtariaForm()
     return render(request, "faixas/list.html", {"faixas": faixas, "form": form})
 
 
+@login_required
 def create_faixa(request):
     if request.method == "POST":
         form = FaixaEtariaForm(request.POST)
@@ -52,6 +56,7 @@ def create_faixa(request):
     )
 
 
+@login_required
 def update_faixa(request, pk):
     faixa = get_object_or_404(FaixaEtaria, pk=pk)
     if request.method == "POST":

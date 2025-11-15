@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -6,12 +8,14 @@ from pacientes.models import TipoProduto
 from .forms import TipoProdutoForm
 
 
+@login_required
 def list_tipos(request):
     tipos = TipoProduto.objects.all().order_by("nome")
     form = TipoProdutoForm()
     return render(request, "tipos_produto/list.html", {"tipos": tipos, "form": form})
 
 
+@login_required
 def create_tipo(request):
     if request.method == "POST":
         form = TipoProdutoForm(request.POST)
@@ -54,6 +58,7 @@ def create_tipo(request):
     )
 
 
+@login_required
 def update_tipo(request, pk):
     tipo = get_object_or_404(TipoProduto, pk=pk)
     if request.method == "POST":

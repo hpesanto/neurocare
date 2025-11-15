@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -6,6 +8,7 @@ from pacientes.models import Convenio
 from .forms import ConvenioForm
 
 
+@login_required
 def list_convenios(request):
     convenios = Convenio.objects.all().order_by("nome")
     form = ConvenioForm()
@@ -14,6 +17,7 @@ def list_convenios(request):
     )
 
 
+@login_required
 def create_convenio(request):
     if request.method == "POST":
         form = ConvenioForm(request.POST)
@@ -54,6 +58,7 @@ def create_convenio(request):
     )
 
 
+@login_required
 def update_convenio(request, pk):
     convenio = get_object_or_404(Convenio, pk=pk)
     if request.method == "POST":

@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,6 +11,7 @@ from .models import ReabilitacaoNeuropsicologica
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def list_reabilitacao(request):
     qs = ReabilitacaoNeuropsicologica.objects.all().order_by("-data_inicio")
     form = ReabilitacaoNeuropsicologicaForm()
@@ -19,6 +22,7 @@ def list_reabilitacao(request):
     )
 
 
+@login_required
 def create_reabilitacao(request):
     if request.method == "POST":
         form = ReabilitacaoNeuropsicologicaForm(request.POST)
@@ -77,6 +81,7 @@ def create_reabilitacao(request):
     )
 
 
+@login_required
 def update_reabilitacao(request, pk):
     item = get_object_or_404(ReabilitacaoNeuropsicologica, pk=pk)
     if request.method == "POST":

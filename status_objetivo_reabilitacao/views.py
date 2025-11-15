@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,6 +11,7 @@ from .models import StatusObjetivoReabilitacao
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def list_status(request):
     qs = StatusObjetivoReabilitacao.objects.all().order_by("nome")
     form = StatusObjetivoReabilitacaoForm()
@@ -19,6 +22,7 @@ def list_status(request):
     )
 
 
+@login_required
 def create_status(request):
     if request.method == "POST":
         form = StatusObjetivoReabilitacaoForm(request.POST)
@@ -71,6 +75,7 @@ def create_status(request):
     )
 
 
+@login_required
 def update_status(request, pk):
     item = get_object_or_404(StatusObjetivoReabilitacao, pk=pk)
     if request.method == "POST":

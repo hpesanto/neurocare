@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -6,6 +8,7 @@ from pacientes.models import ContatoEmergencia
 from .forms import ContatoEmergenciaForm
 
 
+@login_required
 def list_contatos(request):
     contatos = (
         ContatoEmergencia.objects.select_related("id_paciente")
@@ -18,6 +21,7 @@ def list_contatos(request):
     )
 
 
+@login_required
 def create_contato(request):
     if request.method == "POST":
         form = ContatoEmergenciaForm(request.POST)
@@ -60,6 +64,7 @@ def create_contato(request):
     )
 
 
+@login_required
 def update_contato(request, pk):
     contato = get_object_or_404(ContatoEmergencia, pk=pk)
     if request.method == "POST":

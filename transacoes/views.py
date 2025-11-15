@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,12 +11,14 @@ from .models import TransacaoFinanceira
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def list_transacoes(request):
     qs = TransacaoFinanceira.objects.all().order_by("-data_transacao")
     form = TransacaoFinanceiraForm()
     return render(request, "transacoes/list.html", {"items": list(qs), "form": form})
 
 
+@login_required
 def create_transacao(request):
     if request.method == "POST":
         form = TransacaoFinanceiraForm(request.POST)
@@ -65,6 +69,7 @@ def create_transacao(request):
     )
 
 
+@login_required
 def update_transacao(request, pk):
     item = get_object_or_404(TransacaoFinanceira, pk=pk)
     if request.method == "POST":

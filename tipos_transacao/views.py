@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.http import JsonResponse
@@ -10,6 +12,7 @@ from .models import TipoTransacaoFinanceira
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def list_tipos(request):
     qs = TipoTransacaoFinanceira.objects.all().order_by("nome")
     form = TipoTransacaoForm()
@@ -18,6 +21,7 @@ def list_tipos(request):
     )
 
 
+@login_required
 def create_tipo(request):
     if request.method == "POST":
         form = TipoTransacaoForm(request.POST)
@@ -70,6 +74,7 @@ def create_tipo(request):
     )
 
 
+@login_required
 def update_tipo(request, pk):
     item = get_object_or_404(TipoTransacaoFinanceira, pk=pk)
     if request.method == "POST":
@@ -122,6 +127,7 @@ def update_tipo(request, pk):
     )
 
 
+@login_required
 def delete_tipo(request, pk):
     """Handle deletion of a TipoTransacaoFinanceira. Accepts POST (AJAX or normal).
 

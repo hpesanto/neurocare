@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,12 +11,14 @@ from .models import ReabilitacaoObjetivo
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def list_objetivos(request):
     qs = ReabilitacaoObjetivo.objects.all().order_by("-data_criacao")
     form = ReabilitacaoObjetivoForm()
     return render(request, "reabilitacao_objetivo/list.html", {"items": list(qs), "form": form})
 
 
+@login_required
 def create_objetivo(request):
     if request.method == "POST":
         form = ReabilitacaoObjetivoForm(request.POST)
@@ -53,6 +57,7 @@ def create_objetivo(request):
     return render(request, "reabilitacao_objetivo/form.html", {"form": form, "title": "Novo Objetivo", "action": request.path})
 
 
+@login_required
 def update_objetivo(request, pk):
     item = get_object_or_404(ReabilitacaoObjetivo, pk=pk)
     if request.method == "POST":

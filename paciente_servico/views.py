@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 
@@ -6,6 +8,7 @@ from pacientes.models import PacienteServico
 from .forms import PacienteServicoForm
 
 
+@login_required
 def list_paciente_servicos(request):
     servicos = (
         PacienteServico.objects.select_related(
@@ -20,6 +23,7 @@ def list_paciente_servicos(request):
     )
 
 
+@login_required
 def create_paciente_servico(request):
     if request.method == "POST":
         form = PacienteServicoForm(request.POST)
@@ -62,6 +66,7 @@ def create_paciente_servico(request):
     )
 
 
+@login_required
 def update_paciente_servico(request, pk):
     servico = get_object_or_404(PacienteServico, pk=pk)
     if request.method == "POST":

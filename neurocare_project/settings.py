@@ -8,19 +8,17 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # (like NEUROCARE_DB_*) are available when running scripts or Django commands.
 load_dotenv(BASE_DIR / ".env")
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-
 # Security: read SECRET_KEY from environment in production. Keep a development fallback.
 SECRET_KEY = os.environ.get("NEUROCARE_SECRET_KEY", "please-change-me-in-development")
 
 # DEBUG should be False in production. Read from env to control environments.
-DEBUG = os.environ.get("NEUROCARE_DEBUG", "true").lower() in ("1", "true", "yes")
+DEBUG = os.environ.get("NEUROCARE_DEBUG", "false").lower() in ("1", "true", "yes")
 
-ALLOWED_HOSTS = (
-    os.environ.get("NEUROCARE_ALLOWED_HOSTS", "").split(",")
-    if os.environ.get("NEUROCARE_ALLOWED_HOSTS")
-    else []
-)
+ALLOWED_HOSTS = [
+    host.strip() 
+    for host in os.environ.get("NEUROCARE_ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
+    if host.strip()
+]
 
 # Logging configuration to show SQL queries and debug messages from pacientes.views
 LOGGING = {
@@ -136,6 +134,11 @@ USE_TZ = True
 STATIC_URL = "/static/"
 STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
 
+# Authentication
+AUTHENTICATION_BACKENDS = [
+    'pacientes.auth_backends.UsuarioBackend',  # Backend customizado para tb_usuario
+    'django.contrib.auth.backends.ModelBackend',  # Fallback padrão Django
+]
+
 LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "/"
 LOGIN_REDIRECT_URL = "/"

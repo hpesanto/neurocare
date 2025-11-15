@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 import logging
 
 from django.shortcuts import get_object_or_404, redirect, render
@@ -9,6 +11,7 @@ from .models import ReabilitacaoSessao
 logger = logging.getLogger(__name__)
 
 
+@login_required
 def list_sessoes(request):
     qs = ReabilitacaoSessao.objects.all().order_by("-data_sessao", "-hora_sessao")
     form = ReabilitacaoSessaoForm()
@@ -17,6 +20,7 @@ def list_sessoes(request):
     )
 
 
+@login_required
 def create_sessao(request):
     if request.method == "POST":
         form = ReabilitacaoSessaoForm(request.POST)
@@ -77,6 +81,7 @@ def create_sessao(request):
     )
 
 
+@login_required
 def update_sessao(request, pk):
     item = get_object_or_404(ReabilitacaoSessao, pk=pk)
     if request.method == "POST":

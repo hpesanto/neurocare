@@ -1,3 +1,5 @@
+from django.contrib.auth.decorators import login_required
+
 # ...existing code...
 import logging
 
@@ -8,6 +10,7 @@ from .forms import PacienteForm
 from .models import Paciente
 
 
+@login_required
 def list_pacientes(request):
     # Some DB rows may have malformed values for array columns (e.g. `genero`) which raise
     # django.db.utils.DataError when Django tries to load them. We attempt the normal ORM
@@ -74,6 +77,7 @@ def list_pacientes(request):
         request, "pacientes/list.html", {"pacientes": pacientes, "form": form}
     )
 
+@login_required
 def create_paciente(request):
     if request.method == "POST":
         form = PacienteForm(request.POST)
@@ -116,6 +120,7 @@ def create_paciente(request):
     )
 
 
+@login_required
 def update_paciente(request, pk):
     paciente = get_object_or_404(Paciente, pk=pk)
     if request.method == "POST":

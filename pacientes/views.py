@@ -69,6 +69,14 @@ def list_pacientes(request):
             p.telefone_principal = row[3]
             p.email = row[4]
             # Ensure attributes accessed by templates exist to avoid AttributeError
+            # Provide empty/default values for address fields and others that templates may access
+            p.endereco_rua = ""
+            p.endereco_numero = ""
+            p.endereco_complemento = ""
+            p.endereco_bairro = ""
+            p.endereco_cidade = ""
+            p.endereco_estado = ""
+            p.endereco_cep = ""
             p.genero = None
             pacientes.append(p)
 

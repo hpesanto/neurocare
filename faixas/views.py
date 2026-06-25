@@ -1,103 +1,23 @@
-from django.contrib.auth.decorators import login_required
-
-from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
-
+from neurocare_project.crud_views import make_crud_views
 from pacientes.models import FaixaEtaria
 
 from .forms import FaixaEtariaForm
 
+_views = make_crud_views(
+    model=FaixaEtaria,
+    form_class=FaixaEtariaForm,
+    list_template="faixas/list.html",
+    row_template="faixas/row.html",
+    form_template="faixas/form.html",
+    form_partial_template="faixas/_form_partial.html",
+    list_url_name="faixas:list",
+    list_order_by=["nome"],
+    create_title="Nova Faixa Etária",
+    edit_title_fn=lambda i: f"Editar {i.nome}",
+    item_context_name="faixa",
+    list_context_name="faixas",
+)
 
-@login_required
-def list_faixas(request):
-    faixas = FaixaEtaria.objects.all().order_by("nome")
-    form = FaixaEtariaForm()
-    return render(request, "faixas/list.html", {"faixas": faixas, "form": form})
-
-
-@login_required
-def create_faixa(request):
-    if request.method == "POST":
-        form = FaixaEtariaForm(request.POST)
-        if form.is_valid():
-            saved = form.save()
-            if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
-                from django.template.loader import render_to_string
-
-                row_html = render_to_string(
-                    "faixas/row.html", {"faixa": saved}, request=request
-                )
-                return JsonResponse({"ok": True, "row_html": row_html, "id": saved.id})
-            return redirect(reverse("faixas:list"))
-        else:
-            if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
-                from django.template.loader import render_to_string
-
-                form_html = render_to_string(
-                    "faixas/_form_partial.html",
-                    {"form": form, "title": "Nova Faixa Etária"},
-                    request=request,
-                )
-                return JsonResponse({"ok": False, "form_html": form_html}, status=400)
-    else:
-        form = FaixaEtariaForm()
-
-    if request.headers.get("x-requested-with") == "XMLHttpRequest":
-        return render(
-            request,
-            "faixas/_form_partial.html",
-            {"form": form, "title": "Nova Faixa Etária"},
-        )
-
-    return render(
-        request, "faixas/form.html", {"form": form, "title": "Nova Faixa Etária"}
-    )
-
-
-@login_required
-def update_faixa(request, pk):
-    faixa = get_object_or_404(FaixaEtaria, pk=pk)
-    if request.method == "POST":
-        form = FaixaEtariaForm(request.POST, instance=faixa)
-        if form.is_valid():
-            saved = form.save()
-            if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
-                from django.template.loader import render_to_string
-
-                row_html = render_to_string(
-                    "faixas/row.html", {"faixa": saved}, request=request
-                )
-                return JsonResponse({"ok": True, "row_html": row_html, "id": saved.id})
-            return redirect(reverse("faixas:list"))
-        else:
-            if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
-                from django.template.loader import render_to_string
-
-                form_html = render_to_string(
-                    "faixas/_form_partial.html",
-                    {"form": form, "title": f"Editar {faixa.nome}", "instance": faixa},
-                    request=request,
-                )
-                return JsonResponse({"ok": False, "form_html": form_html}, status=400)
-    else:
-        form = FaixaEtariaForm(instance=faixa)
-
-    if request.headers.get("x-requested-with") == "XMLHttpRequest" or request.accepts(
-        "text/html"
-    ):
-        return render(
-            request,
-            "faixas/_form_partial.html",
-            {"form": form, "title": f"Editar {faixa.nome}", "instance": faixa},
-        )
-
-    return render(
-        request, "faixas/form.html", {"form": form, "title": f"Editar {faixa.nome}"}
-    )
-    return render(
-        request, "faixas/form.html", {"form": form, "title": f"Editar {faixa.nome}"}
-    )
+list_faixas = _views["list"]
+create_faixa = _views["create"]
+update_faixa = _views["update"]

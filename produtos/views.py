@@ -1,104 +1,23 @@
-from django.contrib.auth.decorators import login_required
-
-from django.shortcuts import get_object_or_404, redirect, render
-from django.urls import reverse
-
+from neurocare_project.crud_views import make_crud_views
 from pacientes.models import Produto
 
 from .forms import ProdutoForm
 
+_views = make_crud_views(
+    model=Produto,
+    form_class=ProdutoForm,
+    list_template="produtos/list.html",
+    row_template="produtos/row.html",
+    form_template="produtos/form.html",
+    form_partial_template="produtos/_form_partial.html",
+    list_url_name="produtos:list",
+    list_order_by=["nome"],
+    create_title="Novo Produto",
+    edit_title_fn=lambda i: f"Editar {i.nome}",
+    item_context_name="produto",
+    list_context_name="produtos",
+)
 
-@login_required
-def list_produtos(request):
-    produtos = Produto.objects.select_related("id_tipo_produto").all().order_by("nome")
-    form = ProdutoForm()
-    return render(request, "produtos/list.html", {"produtos": produtos, "form": form})
-
-
-@login_required
-def create_produto(request):
-    if request.method == "POST":
-        form = ProdutoForm(request.POST)
-        if form.is_valid():
-            saved = form.save()
-            if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
-                from django.template.loader import render_to_string
-
-                row_html = render_to_string(
-                    "produtos/row.html", {"produto": saved}, request=request
-                )
-                return JsonResponse({"ok": True, "row_html": row_html, "id": saved.id})
-            return redirect(reverse("produtos:list"))
-        else:
-            if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
-                from django.template.loader import render_to_string
-
-                form_html = render_to_string(
-                    "produtos/_form_partial.html",
-                    {"form": form, "title": "Novo Produto"},
-                    request=request,
-                )
-                return JsonResponse({"ok": False, "form_html": form_html}, status=400)
-    else:
-        form = ProdutoForm()
-
-    if request.headers.get("x-requested-with") == "XMLHttpRequest":
-        return render(
-            request,
-            "produtos/_form_partial.html",
-            {"form": form, "title": "Novo Produto"},
-        )
-
-    return render(
-        request, "produtos/form.html", {"form": form, "title": "Novo Produto"}
-    )
-
-
-@login_required
-def update_produto(request, pk):
-    produto = get_object_or_404(Produto, pk=pk)
-    if request.method == "POST":
-        form = ProdutoForm(request.POST, instance=produto)
-        if form.is_valid():
-            saved = form.save()
-            if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
-                from django.template.loader import render_to_string
-
-                row_html = render_to_string(
-                    "produtos/row.html", {"produto": saved}, request=request
-                )
-                return JsonResponse({"ok": True, "row_html": row_html, "id": saved.id})
-            return redirect(reverse("produtos:list"))
-        else:
-            if request.headers.get("x-requested-with") == "XMLHttpRequest":
-                from django.http import JsonResponse
-                from django.template.loader import render_to_string
-
-                form_html = render_to_string(
-                    "produtos/_form_partial.html",
-                    {
-                        "form": form,
-                        "title": f"Editar {produto.nome}",
-                        "instance": produto,
-                    },
-                    request=request,
-                )
-                return JsonResponse({"ok": False, "form_html": form_html}, status=400)
-    else:
-        form = ProdutoForm(instance=produto)
-
-    if request.headers.get("x-requested-with") == "XMLHttpRequest" or request.accepts(
-        "text/html"
-    ):
-        return render(
-            request,
-            "produtos/_form_partial.html",
-            {"form": form, "title": f"Editar {produto.nome}", "instance": produto},
-        )
-
-    return render(
-        request, "produtos/form.html", {"form": form, "title": f"Editar {produto.nome}"}
-    )
+list_produtos = _views["list"]
+create_produto = _views["create"]
+update_produto = _views["update"]

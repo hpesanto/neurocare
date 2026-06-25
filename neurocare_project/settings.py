@@ -20,14 +20,12 @@ ALLOWED_HOSTS = [
     if host.strip()
 ]
 
-# Logging configuration to show SQL queries and debug messages from pacientes.views
 LOGGING = {
     "version": 1,
     "disable_existing_loggers": False,
     "handlers": {"console": {"class": "logging.StreamHandler"}},
     "loggers": {
-        "django.db.backends": {"handlers": ["console"], "level": "DEBUG"},
-        "pacientes.views": {"handlers": ["console"], "level": "DEBUG"},
+        "django": {"handlers": ["console"], "level": "WARNING"},
     },
 }
 
@@ -70,7 +68,7 @@ ROOT_URLCONF = "neurocare_project.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, "templates")],
+        "DIRS": [BASE_DIR / "templates"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -86,31 +84,27 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "neurocare_project.wsgi.application"
 
-# DATABASE configuration: use PostgreSQL. Provide credentials via environment
-# variables (or the .env file at project root). This forces Postgres as the
-# database backend for development and production.
-POSTGRES_CONFIG = {
-    "ENGINE": "django.db.backends.postgresql",
-    "NAME": os.environ.get(
-        "POSTGRES_DB", os.environ.get("NEUROCARE_DB_NAME", "postgres")
-    ),
-    "USER": os.environ.get(
-        "POSTGRES_USER", os.environ.get("NEUROCARE_DB_USER", "postgres")
-    ),
-    "PASSWORD": os.environ.get(
-        "POSTGRES_PASSWORD", os.environ.get("NEUROCARE_DB_PASSWORD", "postgres")
-    ),
-    "HOST": os.environ.get(
-        "POSTGRES_HOST", os.environ.get("NEUROCARE_DB_HOST", "localhost")
-    ),
-    "PORT": os.environ.get(
-        "POSTGRES_PORT", os.environ.get("NEUROCARE_DB_PORT", "5432")
-    ),
-    "OPTIONS": {"options": "-c search_path=neurocare"},
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.postgresql",
+        "NAME": os.environ.get(
+            "POSTGRES_DB", os.environ.get("NEUROCARE_DB_NAME", "postgres")
+        ),
+        "USER": os.environ.get(
+            "POSTGRES_USER", os.environ.get("NEUROCARE_DB_USER", "postgres")
+        ),
+        "PASSWORD": os.environ.get(
+            "POSTGRES_PASSWORD", os.environ.get("NEUROCARE_DB_PASSWORD", "postgres")
+        ),
+        "HOST": os.environ.get(
+            "POSTGRES_HOST", os.environ.get("NEUROCARE_DB_HOST", "localhost")
+        ),
+        "PORT": os.environ.get(
+            "POSTGRES_PORT", os.environ.get("NEUROCARE_DB_PORT", "5432")
+        ),
+        "OPTIONS": {"options": "-c search_path=neurocare"},
+    }
 }
-
-# Force PostgreSQL as the project's database backend.
-DATABASES = {"default": POSTGRES_CONFIG}
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -132,7 +126,7 @@ USE_L10N = True
 USE_TZ = True
 
 STATIC_URL = "/static/"
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATICFILES_DIRS = [BASE_DIR / "static"]
 
 # Authentication
 AUTHENTICATION_BACKENDS = [

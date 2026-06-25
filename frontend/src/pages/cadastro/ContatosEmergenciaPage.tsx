@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import { useCrud } from "../../hooks/useCrud";
@@ -52,24 +53,32 @@ export default function ContatosEmergenciaPage() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
       >
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="nome_contato">Nome</label>
-            <input id="nome_contato" name="nome_contato" defaultValue={editing?.nome_contato ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="telefone_contato">Telefone</label>
-            <input id="telefone_contato" name="telefone_contato" defaultValue={editing?.telefone_contato ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="parentesco">Parentesco</label>
-            <input id="parentesco" name="parentesco" defaultValue={editing?.parentesco ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="id_paciente">ID Paciente</label>
-            <input id="id_paciente" name="id_paciente" defaultValue={editing?.id_paciente ?? ""} required />
-          </div>
-        </div>
+        <Row className="g-3">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Nome *</Form.Label>
+              <Form.Control name="nome_contato" defaultValue={editing?.nome_contato ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Telefone *</Form.Label>
+              <Form.Control name="telefone_contato" defaultValue={editing?.telefone_contato ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Parentesco *</Form.Label>
+              <Form.Control name="parentesco" defaultValue={editing?.parentesco ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>ID Paciente *</Form.Label>
+              <Form.Control name="id_paciente" defaultValue={editing?.id_paciente ?? ""} required />
+            </Form.Group>
+          </Col>
+        </Row>
       </FormModal>
     </>
   );

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import { useCrud } from "../../hooks/useCrud";
@@ -39,7 +40,7 @@ export default function ProdutosPage() {
           { key: "nome", label: "Nome" },
           { key: "tipo_produto_nome", label: "Tipo" },
           { key: "valor_unitario", label: "Valor (R$)" },
-          { key: "ativo", label: "Ativo", render: (i) => (i.ativo ? "Sim" : "Não") },
+          { key: "ativo", label: "Ativo", render: (i) => (i.ativo ? "Sim" : "Nao") },
         ]}
         items={items}
         isLoading={isLoading}
@@ -53,20 +54,26 @@ export default function ProdutosPage() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
       >
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="nome">Nome</label>
-            <input id="nome" name="nome" defaultValue={editing?.nome ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="valor_unitario">Valor Unitario</label>
-            <input id="valor_unitario" name="valor_unitario" type="number" step="0.01" defaultValue={editing?.valor_unitario ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="descricao">Descricao</label>
-            <textarea id="descricao" name="descricao" defaultValue={editing?.descricao ?? ""} />
-          </div>
-        </div>
+        <Row className="g-3">
+          <Col md={8}>
+            <Form.Group>
+              <Form.Label>Nome *</Form.Label>
+              <Form.Control name="nome" defaultValue={editing?.nome ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Valor Unitario *</Form.Label>
+              <Form.Control name="valor_unitario" type="number" step="0.01" defaultValue={editing?.valor_unitario ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={12}>
+            <Form.Group>
+              <Form.Label>Descricao</Form.Label>
+              <Form.Control as="textarea" rows={2} name="descricao" defaultValue={editing?.descricao ?? ""} />
+            </Form.Group>
+          </Col>
+        </Row>
       </FormModal>
     </>
   );

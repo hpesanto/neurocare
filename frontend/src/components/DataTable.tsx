@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Badge, Button, Card, Form, InputGroup, Spinner, Table } from "react-bootstrap";
 
 interface Column<T> {
   key: keyof T | string;
@@ -34,71 +35,101 @@ export default function DataTable<T extends { id: string }>({
     })
   );
 
-  if (isLoading) return <div className="loading">Carregando...</div>;
-
   return (
-    <div className="data-table-container">
-      <div className="data-table-header">
-        <h2>{title}</h2>
-        <div className="data-table-actions">
-          <input
-            type="text"
-            placeholder="Buscar..."
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-            className="search-input"
-          />
-          {onAdd && (
-            <button onClick={onAdd} className="btn-primary">
-              + Novo
-            </button>
-          )}
+    <Card>
+      <Card.Header className="bg-white py-3">
+        <div className="d-flex justify-content-between align-items-center">
+          <div className="d-flex align-items-center gap-2">
+            <h5 className="mb-0 fw-bold">{title}</h5>
+            <Badge bg="secondary" pill>
+              {filtered.length}
+            </Badge>
+          </div>
+          <div className="d-flex gap-2 align-items-center">
+            <InputGroup size="sm" style={{ width: 250 }}>
+              <InputGroup.Text>
+                <i className="bi bi-search" />
+              </InputGroup.Text>
+              <Form.Control
+                placeholder="Buscar..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+              />
+            </InputGroup>
+            {onAdd && (
+              <Button size="sm" onClick={onAdd}>
+                <i className="bi bi-plus-lg me-1" />
+                Novo
+              </Button>
+            )}
+          </div>
         </div>
-      </div>
-      <table className="data-table">
-        <thead>
-          <tr>
-            {columns.map((col) => (
-              <th key={String(col.key)}>{col.label}</th>
-            ))}
-            {(onEdit || onDelete) && <th>Ações</th>}
-          </tr>
-        </thead>
-        <tbody>
-          {filtered.map((item) => (
-            <tr key={item.id}>
-              {columns.map((col) => (
-                <td key={String(col.key)}>
-                  {col.render
-                    ? col.render(item)
-                    : String((item as Record<string, unknown>)[col.key as string] ?? "")}
-                </td>
+      </Card.Header>
+      <Card.Body className="p-0">
+        {isLoading ? (
+          <div className="text-center py-5">
+            <Spinner animation="border" variant="primary" />
+          </div>
+        ) : (
+          <Table hover responsive className="mb-0">
+            <thead className="table-light">
+              <tr>
+                {columns.map((col) => (
+                  <th key={String(col.key)}>{col.label}</th>
+                ))}
+                {(onEdit || onDelete) && <th style={{ width: 120 }}>Acoes</th>}
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.map((item) => (
+                <tr key={item.id}>
+                  {columns.map((col) => (
+                    <td key={String(col.key)}>
+                      {col.render
+                        ? col.render(item)
+                        : String((item as Record<string, unknown>)[col.key as string] ?? "—")}
+                    </td>
+                  ))}
+                  {(onEdit || onDelete) && (
+                    <td>
+                      <div className="d-flex gap-1">
+                        {onEdit && (
+                          <Button
+                            variant="outline-primary"
+                            size="sm"
+                            onClick={() => onEdit(item)}
+                            title="Editar"
+                          >
+                            <i className="bi bi-pencil" />
+                          </Button>
+                        )}
+                        {onDelete && (
+                          <Button
+                            variant="outline-danger"
+                            size="sm"
+                            onClick={() => onDelete(item.id)}
+                            title="Excluir"
+                          >
+                            <i className="bi bi-trash" />
+                          </Button>
+                        )}
+                      </div>
+                    </td>
+                  )}
+                </tr>
               ))}
-              {(onEdit || onDelete) && (
-                <td className="actions-cell">
-                  {onEdit && (
-                    <button onClick={() => onEdit(item)} className="btn-edit">
-                      Editar
-                    </button>
-                  )}
-                  {onDelete && (
-                    <button onClick={() => onDelete(item.id)} className="btn-delete">
-                      Excluir
-                    </button>
-                  )}
-                </td>
+              {filtered.length === 0 && (
+                <tr>
+                  <td colSpan={columns.length + 1} className="text-center text-muted py-4">
+                    <i className="bi bi-inbox fs-3 d-block mb-2" />
+                    Nenhum registro encontrado
+                  </td>
+                </tr>
               )}
-            </tr>
-          ))}
-          {filtered.length === 0 && (
-            <tr>
-              <td colSpan={columns.length + 1} className="empty-row">
-                Nenhum registro encontrado
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+            </tbody>
+          </Table>
+        )}
+      </Card.Body>
+    </Card>
   );
 }

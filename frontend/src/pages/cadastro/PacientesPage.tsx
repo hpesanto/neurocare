@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import { useCrud } from "../../hooks/useCrud";
@@ -46,129 +47,184 @@ export default function PacientesPage() {
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
+        size="xl"
       >
-        <h4 style={{ marginBottom: "0.75rem", color: "#64748b", fontSize: "0.8rem", textTransform: "uppercase" }}>Dados Pessoais</h4>
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="nome_completo">Nome Completo *</label>
-            <input id="nome_completo" name="nome_completo" defaultValue={editing?.nome_completo ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="data_nascimento">Data de Nascimento *</label>
-            <input id="data_nascimento" name="data_nascimento" type="date" defaultValue={editing?.data_nascimento ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="cpf">CPF</label>
-            <input id="cpf" name="cpf" defaultValue={editing?.cpf ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="rg">RG</label>
-            <input id="rg" name="rg" defaultValue={editing?.rg ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="genero">Genero</label>
-            <select id="genero" name="genero" defaultValue={editing?.genero ?? ""}>
-              <option value="">Selecione</option>
-              <option value="Masculino">Masculino</option>
-              <option value="Feminino">Feminino</option>
-              <option value="Outro">Outro</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="estado_civil">Estado Civil</label>
-            <select id="estado_civil" name="estado_civil" defaultValue={editing?.estado_civil ?? ""}>
-              <option value="">Selecione</option>
-              <option value="Solteiro">Solteiro</option>
-              <option value="Casado">Casado</option>
-              <option value="Divorciado">Divorciado</option>
-            </select>
-          </div>
-          <div className="form-group">
-            <label htmlFor="profissao">Profissao</label>
-            <input id="profissao" name="profissao" defaultValue={editing?.profissao ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="status_paciente">Status</label>
-            <select id="status_paciente" name="status_paciente" defaultValue={editing?.status_paciente ?? "Ativo"}>
-              <option value="Ativo">Ativo</option>
-              <option value="Inativo">Inativo</option>
-              <option value="Alta">Alta</option>
-              <option value="Em Espera">Em Espera</option>
-            </select>
-          </div>
-        </div>
+        <h6 className="text-muted text-uppercase small fw-bold mb-3">
+          <i className="bi bi-person me-1" /> Dados Pessoais
+        </h6>
+        <Row className="g-3 mb-4">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Nome Completo *</Form.Label>
+              <Form.Control name="nome_completo" defaultValue={editing?.nome_completo ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Data Nascimento *</Form.Label>
+              <Form.Control name="data_nascimento" type="date" defaultValue={editing?.data_nascimento ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>CPF</Form.Label>
+              <Form.Control name="cpf" defaultValue={editing?.cpf ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>RG</Form.Label>
+              <Form.Control name="rg" defaultValue={editing?.rg ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Genero</Form.Label>
+              <Form.Select name="genero" defaultValue={editing?.genero ?? ""}>
+                <option value="">Selecione</option>
+                <option value="Masculino">Masculino</option>
+                <option value="Feminino">Feminino</option>
+                <option value="Outro">Outro</option>
+              </Form.Select>
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Estado Civil</Form.Label>
+              <Form.Select name="estado_civil" defaultValue={editing?.estado_civil ?? ""}>
+                <option value="">Selecione</option>
+                <option value="Solteiro">Solteiro</option>
+                <option value="Casado">Casado</option>
+                <option value="Divorciado">Divorciado</option>
+              </Form.Select>
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Profissao</Form.Label>
+              <Form.Control name="profissao" defaultValue={editing?.profissao ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Status</Form.Label>
+              <Form.Select name="status_paciente" defaultValue={editing?.status_paciente ?? "Ativo"}>
+                <option value="Ativo">Ativo</option>
+                <option value="Inativo">Inativo</option>
+                <option value="Alta">Alta</option>
+                <option value="Em Espera">Em Espera</option>
+              </Form.Select>
+            </Form.Group>
+          </Col>
+        </Row>
 
-        <h4 style={{ margin: "1rem 0 0.75rem", color: "#64748b", fontSize: "0.8rem", textTransform: "uppercase" }}>Contato</h4>
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="telefone_principal">Telefone Principal *</label>
-            <input id="telefone_principal" name="telefone_principal" defaultValue={editing?.telefone_principal ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="telefone_secundario">Telefone Secundario</label>
-            <input id="telefone_secundario" name="telefone_secundario" defaultValue={editing?.telefone_secundario ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Email</label>
-            <input id="email" name="email" type="email" defaultValue={editing?.email ?? ""} />
-          </div>
-        </div>
+        <h6 className="text-muted text-uppercase small fw-bold mb-3">
+          <i className="bi bi-telephone me-1" /> Contato
+        </h6>
+        <Row className="g-3 mb-4">
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Telefone Principal *</Form.Label>
+              <Form.Control name="telefone_principal" defaultValue={editing?.telefone_principal ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Telefone Secundario</Form.Label>
+              <Form.Control name="telefone_secundario" defaultValue={editing?.telefone_secundario ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Email</Form.Label>
+              <Form.Control name="email" type="email" defaultValue={editing?.email ?? ""} />
+            </Form.Group>
+          </Col>
+        </Row>
 
-        <h4 style={{ margin: "1rem 0 0.75rem", color: "#64748b", fontSize: "0.8rem", textTransform: "uppercase" }}>Endereco</h4>
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="endereco_rua">Rua</label>
-            <input id="endereco_rua" name="endereco_rua" defaultValue={editing?.endereco_rua ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="endereco_numero">Numero</label>
-            <input id="endereco_numero" name="endereco_numero" defaultValue={editing?.endereco_numero ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="endereco_complemento">Complemento</label>
-            <input id="endereco_complemento" name="endereco_complemento" defaultValue={editing?.endereco_complemento ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="endereco_bairro">Bairro</label>
-            <input id="endereco_bairro" name="endereco_bairro" defaultValue={editing?.endereco_bairro ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="endereco_cidade">Cidade</label>
-            <input id="endereco_cidade" name="endereco_cidade" defaultValue={editing?.endereco_cidade ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="endereco_estado">Estado</label>
-            <input id="endereco_estado" name="endereco_estado" defaultValue={editing?.endereco_estado ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="endereco_cep">CEP</label>
-            <input id="endereco_cep" name="endereco_cep" defaultValue={editing?.endereco_cep ?? ""} />
-          </div>
-        </div>
+        <h6 className="text-muted text-uppercase small fw-bold mb-3">
+          <i className="bi bi-geo-alt me-1" /> Endereco
+        </h6>
+        <Row className="g-3 mb-4">
+          <Col md={5}>
+            <Form.Group>
+              <Form.Label>Rua</Form.Label>
+              <Form.Control name="endereco_rua" defaultValue={editing?.endereco_rua ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={2}>
+            <Form.Group>
+              <Form.Label>Numero</Form.Label>
+              <Form.Control name="endereco_numero" defaultValue={editing?.endereco_numero ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={2}>
+            <Form.Group>
+              <Form.Label>Complemento</Form.Label>
+              <Form.Control name="endereco_complemento" defaultValue={editing?.endereco_complemento ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Bairro</Form.Label>
+              <Form.Control name="endereco_bairro" defaultValue={editing?.endereco_bairro ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Cidade</Form.Label>
+              <Form.Control name="endereco_cidade" defaultValue={editing?.endereco_cidade ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Estado</Form.Label>
+              <Form.Control name="endereco_estado" defaultValue={editing?.endereco_estado ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>CEP</Form.Label>
+              <Form.Control name="endereco_cep" defaultValue={editing?.endereco_cep ?? ""} />
+            </Form.Group>
+          </Col>
+        </Row>
 
-        <h4 style={{ margin: "1rem 0 0.75rem", color: "#64748b", fontSize: "0.8rem", textTransform: "uppercase" }}>Encaminhamento e Convenio</h4>
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="quem_encaminhou">Quem Encaminhou</label>
-            <input id="quem_encaminhou" name="quem_encaminhou" defaultValue={editing?.quem_encaminhou ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="numero_carteirinha_convenio">N. Carteirinha Convenio</label>
-            <input id="numero_carteirinha_convenio" name="numero_carteirinha_convenio" defaultValue={editing?.numero_carteirinha_convenio ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="validade_carteirinha_convenio">Validade Carteirinha</label>
-            <input id="validade_carteirinha_convenio" name="validade_carteirinha_convenio" type="date" defaultValue={editing?.validade_carteirinha_convenio ?? ""} />
-          </div>
-        </div>
-        <div className="form-group">
-          <label htmlFor="motivo_encaminhamento">Motivo do Encaminhamento</label>
-          <textarea id="motivo_encaminhamento" name="motivo_encaminhamento" rows={3} defaultValue={editing?.motivo_encaminhamento ?? ""} />
-        </div>
-        <div className="form-group">
-          <label htmlFor="observacoes_gerais">Observacoes Gerais</label>
-          <textarea id="observacoes_gerais" name="observacoes_gerais" rows={3} defaultValue={editing?.observacoes_gerais ?? ""} />
-        </div>
+        <h6 className="text-muted text-uppercase small fw-bold mb-3">
+          <i className="bi bi-send me-1" /> Encaminhamento e Convenio
+        </h6>
+        <Row className="g-3 mb-3">
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Quem Encaminhou</Form.Label>
+              <Form.Control name="quem_encaminhou" defaultValue={editing?.quem_encaminhou ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>N. Carteirinha</Form.Label>
+              <Form.Control name="numero_carteirinha_convenio" defaultValue={editing?.numero_carteirinha_convenio ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Validade Carteirinha</Form.Label>
+              <Form.Control name="validade_carteirinha_convenio" type="date" defaultValue={editing?.validade_carteirinha_convenio ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Motivo Encaminhamento</Form.Label>
+              <Form.Control as="textarea" rows={2} name="motivo_encaminhamento" defaultValue={editing?.motivo_encaminhamento ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Observacoes Gerais</Form.Label>
+              <Form.Control as="textarea" rows={2} name="observacoes_gerais" defaultValue={editing?.observacoes_gerais ?? ""} />
+            </Form.Group>
+          </Col>
+        </Row>
       </FormModal>
     </>
   );

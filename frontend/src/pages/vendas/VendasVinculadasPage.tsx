@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import { useCrud } from "../../hooks/useCrud";
@@ -10,6 +11,7 @@ interface VendaVinculada {
   paciente_nome: string | null;
   id_produto: string;
   produto_nome: string | null;
+  id_forma_pagamento: string;
   data_venda: string;
   quantidade: number;
   valor_unitario: string;
@@ -57,32 +59,50 @@ export default function VendasVinculadasPage() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
       >
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="data_venda">Data</label>
-            <input id="data_venda" name="data_venda" type="date" defaultValue={editing?.data_venda ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="quantidade">Quantidade</label>
-            <input id="quantidade" name="quantidade" type="number" defaultValue={editing?.quantidade ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="valor_unitario">Valor Unitario</label>
-            <input id="valor_unitario" name="valor_unitario" type="number" step="0.01" defaultValue={editing?.valor_unitario ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="valor_total_produto">Valor Total</label>
-            <input id="valor_total_produto" name="valor_total_produto" type="number" step="0.01" defaultValue={editing?.valor_total_produto ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="id_paciente">ID Paciente</label>
-            <input id="id_paciente" name="id_paciente" defaultValue={editing?.id_paciente ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="id_produto">ID Produto</label>
-            <input id="id_produto" name="id_produto" defaultValue={editing?.id_produto ?? ""} required />
-          </div>
-        </div>
+        <Row className="g-3">
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Data *</Form.Label>
+              <Form.Control name="data_venda" type="date" defaultValue={editing?.data_venda ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Quantidade *</Form.Label>
+              <Form.Control name="quantidade" type="number" defaultValue={editing?.quantidade ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Valor Unitario *</Form.Label>
+              <Form.Control name="valor_unitario" type="number" step="0.01" defaultValue={editing?.valor_unitario ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Valor Total *</Form.Label>
+              <Form.Control name="valor_total_produto" type="number" step="0.01" defaultValue={editing?.valor_total_produto ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>ID Paciente *</Form.Label>
+              <Form.Control name="id_paciente" defaultValue={editing?.id_paciente ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>ID Produto *</Form.Label>
+              <Form.Control name="id_produto" defaultValue={editing?.id_produto ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>ID Forma Pagamento *</Form.Label>
+              <Form.Control name="id_forma_pagamento" defaultValue={editing?.id_forma_pagamento ?? ""} required />
+            </Form.Group>
+          </Col>
+        </Row>
       </FormModal>
     </>
   );

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import { useCrud } from "../../hooks/useCrud";
@@ -45,24 +46,32 @@ export default function ProfissionaisPage() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
       >
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="nome">Nome *</label>
-            <input id="nome" name="nome" defaultValue={editing?.nome ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="email">Email *</label>
-            <input id="email" name="email" type="email" defaultValue={editing?.email ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="login">Login *</label>
-            <input id="login" name="login" defaultValue={editing?.login ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="senha">{editing ? "Nova Senha" : "Senha *"}</label>
-            <input id="senha" name="senha" type="password" required={!editing} />
-          </div>
-        </div>
+        <Row className="g-3">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Nome *</Form.Label>
+              <Form.Control name="nome" defaultValue={editing?.nome ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Email *</Form.Label>
+              <Form.Control name="email" type="email" defaultValue={editing?.email ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Login *</Form.Label>
+              <Form.Control name="login" defaultValue={editing?.login ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>{editing ? "Nova Senha" : "Senha *"}</Form.Label>
+              <Form.Control name="senha" type="password" required={!editing} />
+            </Form.Group>
+          </Col>
+        </Row>
       </FormModal>
     </>
   );

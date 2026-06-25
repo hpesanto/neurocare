@@ -1,16 +1,17 @@
+import { Container } from "react-bootstrap";
 import { Outlet } from "react-router-dom";
 import Header from "./Header";
 import Sidebar from "./Sidebar";
 
 export default function MainLayout() {
   return (
-    <div className="app-layout">
+    <div className="d-flex">
       <Sidebar />
-      <div className="main-content">
+      <div className="nc-main d-flex flex-column flex-grow-1">
         <Header />
-        <main className="page-content">
+        <Container fluid className="p-4 flex-grow-1">
           <Outlet />
-        </main>
+        </Container>
       </div>
     </div>
   );

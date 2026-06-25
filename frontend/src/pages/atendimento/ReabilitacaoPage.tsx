@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import { useCrud } from "../../hooks/useCrud";
@@ -7,12 +8,12 @@ import { ENDPOINTS } from "../../api/endpoints";
 interface Reabilitacao {
   id: string;
   id_paciente: string;
+  id_psicologo: string;
   paciente_nome: string | null;
   psicologo_nome: string | null;
   data_inicio: string;
   data_fim_prevista: string | null;
   programa_descricao: string;
-  num_sessoes_planejadas: number | null;
   frequencia: string | null;
 }
 
@@ -56,28 +57,44 @@ export default function ReabilitacaoPage() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
       >
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="id_paciente">ID Paciente</label>
-            <input id="id_paciente" name="id_paciente" defaultValue={editing?.id_paciente ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="data_inicio">Data Inicio</label>
-            <input id="data_inicio" name="data_inicio" type="date" defaultValue={editing?.data_inicio ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="data_fim_prevista">Fim Previsto</label>
-            <input id="data_fim_prevista" name="data_fim_prevista" type="date" defaultValue={editing?.data_fim_prevista ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="frequencia">Frequencia</label>
-            <input id="frequencia" name="frequencia" defaultValue={editing?.frequencia ?? ""} />
-          </div>
-        </div>
-        <div className="form-group">
-          <label htmlFor="programa_descricao">Descricao do Programa</label>
-          <textarea id="programa_descricao" name="programa_descricao" rows={4} defaultValue={editing?.programa_descricao ?? ""} required />
-        </div>
+        <Row className="g-3">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>ID Paciente *</Form.Label>
+              <Form.Control name="id_paciente" defaultValue={editing?.id_paciente ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>ID Psicologo *</Form.Label>
+              <Form.Control name="id_psicologo" defaultValue={editing?.id_psicologo ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Data Inicio *</Form.Label>
+              <Form.Control name="data_inicio" type="date" defaultValue={editing?.data_inicio ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Fim Previsto</Form.Label>
+              <Form.Control name="data_fim_prevista" type="date" defaultValue={editing?.data_fim_prevista ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Frequencia</Form.Label>
+              <Form.Control name="frequencia" defaultValue={editing?.frequencia ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={12}>
+            <Form.Group>
+              <Form.Label>Descricao do Programa *</Form.Label>
+              <Form.Control as="textarea" rows={4} name="programa_descricao" defaultValue={editing?.programa_descricao ?? ""} required />
+            </Form.Group>
+          </Col>
+        </Row>
       </FormModal>
     </>
   );

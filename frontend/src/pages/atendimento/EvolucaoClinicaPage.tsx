@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import { useCrud } from "../../hooks/useCrud";
@@ -44,28 +45,38 @@ export default function EvolucaoClinicaPage() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
       >
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="id_paciente">ID Paciente</label>
-            <input id="id_paciente" name="id_paciente" defaultValue={editing?.id_paciente ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="id_psicologo">ID Psicologo</label>
-            <input id="id_psicologo" name="id_psicologo" defaultValue={editing?.id_psicologo ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="data_sessao">Data</label>
-            <input id="data_sessao" name="data_sessao" type="date" defaultValue={editing?.data_sessao ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="hora_sessao">Hora</label>
-            <input id="hora_sessao" name="hora_sessao" type="time" defaultValue={editing?.hora_sessao ?? ""} />
-          </div>
-        </div>
-        <div className="form-group">
-          <label htmlFor="evolucao_texto">Evolucao</label>
-          <textarea id="evolucao_texto" name="evolucao_texto" rows={5} defaultValue={editing?.evolucao_texto ?? ""} required />
-        </div>
+        <Row className="g-3">
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>ID Paciente *</Form.Label>
+              <Form.Control name="id_paciente" defaultValue={editing?.id_paciente ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>ID Psicologo *</Form.Label>
+              <Form.Control name="id_psicologo" defaultValue={editing?.id_psicologo ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Data *</Form.Label>
+              <Form.Control name="data_sessao" type="date" defaultValue={editing?.data_sessao ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Hora</Form.Label>
+              <Form.Control name="hora_sessao" type="time" defaultValue={editing?.hora_sessao ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={12}>
+            <Form.Group>
+              <Form.Label>Evolucao *</Form.Label>
+              <Form.Control as="textarea" rows={5} name="evolucao_texto" defaultValue={editing?.evolucao_texto ?? ""} required />
+            </Form.Group>
+          </Col>
+        </Row>
       </FormModal>
     </>
   );

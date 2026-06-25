@@ -1,8 +1,10 @@
+import { Nav } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 interface MenuItem {
   label: string;
   path: string;
+  icon: string;
 }
 
 interface MenuSection {
@@ -14,64 +16,75 @@ const MENU: MenuSection[] = [
   {
     title: "Cadastro",
     items: [
-      { label: "Pacientes", path: "/cadastro/pacientes" },
-      { label: "Profissionais", path: "/cadastro/profissionais" },
-      { label: "Convênios", path: "/cadastro/convenios" },
-      { label: "Formas de Pagamento", path: "/cadastro/formas-pagamento" },
-      { label: "Tipos de Produto", path: "/cadastro/tipos-produto" },
-      { label: "Produtos", path: "/cadastro/produtos" },
-      { label: "Faixas Etárias", path: "/cadastro/faixas-etarias" },
-      { label: "Tipos de Serviço", path: "/cadastro/tipos-servico" },
-      { label: "Contatos de Emergência", path: "/cadastro/contatos-emergencia" },
+      { label: "Pacientes", path: "/cadastro/pacientes", icon: "bi-people" },
+      { label: "Profissionais", path: "/cadastro/profissionais", icon: "bi-person-badge" },
+      { label: "Convenios", path: "/cadastro/convenios", icon: "bi-building" },
+      { label: "Formas de Pagamento", path: "/cadastro/formas-pagamento", icon: "bi-credit-card" },
+      { label: "Tipos de Produto", path: "/cadastro/tipos-produto", icon: "bi-tags" },
+      { label: "Produtos", path: "/cadastro/produtos", icon: "bi-box" },
+      { label: "Faixas Etarias", path: "/cadastro/faixas-etarias", icon: "bi-bar-chart-steps" },
+      { label: "Tipos de Servico", path: "/cadastro/tipos-servico", icon: "bi-gear" },
+      { label: "Contatos Emergencia", path: "/cadastro/contatos-emergencia", icon: "bi-telephone" },
     ],
   },
   {
     title: "Atendimento",
     items: [
-      { label: "Evolução Clínica", path: "/atendimento/evolucao-clinica" },
-      { label: "Avaliação Neuropsicológica", path: "/atendimento/avaliacao-neuropsicologica" },
-      { label: "Reabilitação - Objetivos", path: "/atendimento/objetivos-reabilitacao" },
-      { label: "Reabilitação - Sessões", path: "/atendimento/sessoes-reabilitacao" },
+      { label: "Evolucao Clinica", path: "/atendimento/evolucao-clinica", icon: "bi-journal-medical" },
+      { label: "Avaliacao Neuropsi.", path: "/atendimento/avaliacao-neuropsicologica", icon: "bi-clipboard2-pulse" },
+      { label: "Objetivos Reab.", path: "/atendimento/objetivos-reabilitacao", icon: "bi-bullseye" },
+      { label: "Sessoes Reab.", path: "/atendimento/sessoes-reabilitacao", icon: "bi-calendar-check" },
     ],
   },
   {
     title: "Financeiro",
     items: [
-      { label: "Reabilitação Neuropsicológica", path: "/financeiro/reabilitacao" },
-      { label: "Transações", path: "/financeiro/transacoes" },
-      { label: "Tipos de Transação", path: "/financeiro/tipos-transacao" },
-      { label: "Status de Pagamento", path: "/financeiro/status-pagamento" },
+      { label: "Reabilitacao", path: "/financeiro/reabilitacao", icon: "bi-heart-pulse" },
+      { label: "Transacoes", path: "/financeiro/transacoes", icon: "bi-cash-stack" },
+      { label: "Tipos de Transacao", path: "/financeiro/tipos-transacao", icon: "bi-list-check" },
+      { label: "Status Pagamento", path: "/financeiro/status-pagamento", icon: "bi-check-circle" },
+      { label: "Formas Cobranca", path: "/financeiro/formas-cobranca", icon: "bi-receipt" },
     ],
   },
   {
     title: "Vendas",
     items: [
-      { label: "Vendas Vinculadas", path: "/vendas/vinculadas" },
-      { label: "Vendas Gerais", path: "/vendas/geral" },
+      { label: "Vendas Vinculadas", path: "/vendas/vinculadas", icon: "bi-cart" },
+      { label: "Vendas Gerais", path: "/vendas/geral", icon: "bi-shop" },
     ],
   },
 ];
 
 export default function Sidebar() {
   return (
-    <aside className="sidebar">
-      <div className="sidebar-header">
-        <h2>NeuroCare</h2>
+    <aside className="nc-sidebar d-flex flex-column">
+      <div className="px-3 py-3 border-bottom border-dark">
+        <h5 className="text-white mb-0 fw-bold">
+          <i className="bi bi-activity me-2" />
+          NeuroCare
+        </h5>
       </div>
-      <nav>
+      <Nav className="flex-column py-2 flex-grow-1">
         {MENU.map((section) => (
-          <div key={section.title} className="menu-section">
-            <h3>{section.title}</h3>
-            <ul>
-              {section.items.map((item) => (
-                <li key={item.path}>
-                  <NavLink to={item.path}>{item.label}</NavLink>
-                </li>
-              ))}
-            </ul>
+          <div key={section.title}>
+            <div className="nc-section-label">{section.title}</div>
+            {section.items.map((item) => (
+              <Nav.Link
+                key={item.path}
+                as={NavLink}
+                to={item.path}
+                className="d-flex align-items-center gap-2"
+              >
+                <i className={`bi ${item.icon}`} />
+                {item.label}
+              </Nav.Link>
+            ))}
           </div>
         ))}
-      </nav>
+      </Nav>
+      <div className="px-3 py-3 border-top border-dark">
+        <small className="text-white-50">NeuroCare v2.0</small>
+      </div>
     </aside>
   );
 }

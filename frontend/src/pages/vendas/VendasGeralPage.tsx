@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import { useCrud } from "../../hooks/useCrud";
@@ -10,6 +11,7 @@ interface VendaGeral {
   nome_comprador: string | null;
   contato_comprador: string | null;
   valor_total_transacao: string;
+  id_forma_pagamento: string;
 }
 
 export default function VendasGeralPage() {
@@ -51,24 +53,38 @@ export default function VendasGeralPage() {
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
       >
-        <div className="form-grid">
-          <div className="form-group">
-            <label htmlFor="data_venda">Data</label>
-            <input id="data_venda" name="data_venda" type="date" defaultValue={editing?.data_venda ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="valor_total_transacao">Valor Total</label>
-            <input id="valor_total_transacao" name="valor_total_transacao" type="number" step="0.01" defaultValue={editing?.valor_total_transacao ?? ""} required />
-          </div>
-          <div className="form-group">
-            <label htmlFor="nome_comprador">Comprador</label>
-            <input id="nome_comprador" name="nome_comprador" defaultValue={editing?.nome_comprador ?? ""} />
-          </div>
-          <div className="form-group">
-            <label htmlFor="contato_comprador">Contato</label>
-            <input id="contato_comprador" name="contato_comprador" defaultValue={editing?.contato_comprador ?? ""} />
-          </div>
-        </div>
+        <Row className="g-3">
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Data *</Form.Label>
+              <Form.Control name="data_venda" type="date" defaultValue={editing?.data_venda ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Valor Total *</Form.Label>
+              <Form.Control name="valor_total_transacao" type="number" step="0.01" defaultValue={editing?.valor_total_transacao ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>ID Forma Pagamento *</Form.Label>
+              <Form.Control name="id_forma_pagamento" defaultValue={editing?.id_forma_pagamento ?? ""} required />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Comprador</Form.Label>
+              <Form.Control name="nome_comprador" defaultValue={editing?.nome_comprador ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={6}>
+            <Form.Group>
+              <Form.Label>Contato</Form.Label>
+              <Form.Control name="contato_comprador" defaultValue={editing?.contato_comprador ?? ""} />
+            </Form.Group>
+          </Col>
+        </Row>
       </FormModal>
     </>
   );

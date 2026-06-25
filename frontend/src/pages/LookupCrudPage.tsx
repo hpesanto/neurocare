@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Form } from "react-bootstrap";
 import DataTable from "../components/DataTable";
 import FormModal from "../components/FormModal";
 import { useCrud } from "../hooks/useCrud";
@@ -30,34 +31,26 @@ export default function LookupCrudPage({ endpoint, title, itemLabel }: LookupCru
         columns={[{ key: "nome", label: "Nome" }]}
         items={items}
         isLoading={isLoading}
-        onAdd={() => {
-          setEditing(null);
-          setModalOpen(true);
-        }}
-        onEdit={(item) => {
-          setEditing(item);
-          setModalOpen(true);
-        }}
-        onDelete={(id) => {
-          if (confirm(`Excluir ${itemLabel}?`)) remove(id);
-        }}
+        onAdd={() => { setEditing(null); setModalOpen(true); }}
+        onEdit={(item) => { setEditing(item); setModalOpen(true); }}
+        onDelete={(id) => { if (confirm(`Excluir ${itemLabel}?`)) remove(id); }}
       />
       <FormModal
         title={editing ? `Editar ${itemLabel}` : `Novo ${itemLabel}`}
         open={modalOpen}
         onClose={() => setModalOpen(false)}
         onSubmit={handleSubmit}
+        size="sm"
       >
-        <div className="form-group">
-          <label htmlFor="nome">Nome</label>
-          <input
-            id="nome"
+        <Form.Group>
+          <Form.Label>Nome</Form.Label>
+          <Form.Control
             name="nome"
-            type="text"
             defaultValue={editing?.nome ?? ""}
             required
+            autoFocus
           />
-        </div>
+        </Form.Group>
       </FormModal>
     </>
   );

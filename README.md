@@ -1,121 +1,188 @@
-# NeuroCare (inicial)
+# NeuroCare
 
-Quick start (Windows PowerShell)
+Sistema de gestao clinica para neuropsicologia — controle de pacientes, avaliacoes, reabilitacao, financeiro e vendas.
 
-1. Ative o ambiente virtual (ex.: `psico` já incluído no workspace):
+## Stack
 
-```powershell
-.\psico\Scripts\Activate.ps1
+| Camada | Tecnologia |
+|--------|-----------|
+| Backend | Django 5.2 + Django REST Framework + SimpleJWT |
+| Frontend | React 18 + TypeScript + Vite + React Bootstrap 5 |
+| Banco | PostgreSQL 16 (schema `neurocare`) |
+| Infra | Docker Compose (3 servicos) |
+
+## Quick Start (Docker)
+
+```bash
+git clone https://github.com/hpesanto/neurocare.git
+cd neurocare
+docker compose up --build
 ```
 
-2. Instale dependências (se necessário):
+Acesse:
+- **App:** http://localhost:3000
+- **API:** http://localhost:8000/api/
+- **Admin Django:** http://localhost:8000/admin/
+- **Login:** `admin` / `admin123`
 
-```powershell
+O Docker cria automaticamente o banco, schema, tabelas, dados de referencia e o superusuario.
+
+## Quick Start (Dev local)
+
+### Backend
+
+```bash
+cd backend
+python -m venv venv
+venv\Scripts\activate        # Windows
 pip install -r requirements.txt
-```
-
-3. Banco de dados — Postgres (recomendado) ou SQLite (fallback)
-
-O projeto tenta conectar ao PostgreSQL usando as credenciais definidas em `neurocare_project/settings.py`.
-
-Para usar PostgreSQL localmente:
-
-1. Instale um servidor Postgres (p.ex. PostgreSQL para Windows) e crie um banco/usuário:
-
-```powershell
-# Exemplo usando psql (executar no prompt do Postgres ou no PowerShell se psql estiver no PATH)
-psql -U postgres
-CREATE DATABASE postgres;
-CREATE USER psico WITH PASSWORD 'psico10!';
-GRANT ALL PRIVILEGES ON DATABASE postgres TO psico;
-\q
-```
-
-2. Ajuste `neurocare_project/settings.py` (ou use variáveis de ambiente) para apontar para o banco criado.
-
-3. Rode migrações:
-
-```powershell
 python manage.py migrate
-
-
-```
-
-Se a conexão com Postgres falhar por qualquer motivo, o projeto cairá para SQLite automaticamente (arquivo `db.sqlite3` no diretório do projeto).
-
-Variáveis de ambiente (recomendado)
-
-O projeto agora lê as principais configurações (SECRET_KEY, DEBUG e configurações do banco) a partir de variáveis de ambiente. Existe um exemplo de arquivo `.env` chamado `.env.example` no repositório.
-
-Exemplo rápido (PowerShell) — exporte as variáveis antes de executar o servidor:
-
-```powershell
-$env:NEUROCARE_SECRET_KEY = "uma_chave_segura_aqui"
-$env:NEUROCARE_DEBUG = "false"
-$env:NEUROCARE_DB_NAME = "postgres"
-$env:NEUROCARE_DB_USER = "postgres"
-$env:NEUROCARE_DB_PASSWORD = "postgres"
-$env:NEUROCARE_DB_HOST = "localhost"
-$env:NEUROCARE_DB_PORT = "5432"
-```
-
-Você também pode usar ferramentas como `python-dotenv` (carregar variáveis de um `.env`) em desenvolvimento; não comite um `.env` com segredos reais.
-
-4. Crie um superusuário (interativo):
-
-```powershell
 python manage.py createsuperuser
-```
-
-5. Inicie o servidor de desenvolvimento:
-
-```powershell
 python manage.py runserver
-
-python manage.py runserver --noreload
 ```
 
-Abra http://127.0.0.1:8000/ no navegador.
+### Frontend
 
-Menu e submenus
-
-O menu de navegação é configurado em `neurocare_project/menu_config.py` e agora suporta subitens (children). Cada item pode ter:
-
-- `title`: texto exibido
-- `url`: rota do link (opcional)
-- `permissions`: lista de permissions Django (opcional)
-- `children`: lista de subitens com a mesma estrutura
-
-Comportamento de permissões implementado: "bloqueio apenas no nível de filhos" — isto é, um pai com permissões não impede que filhos apareçam se os filhos tiverem suas próprias permissões e essas forem atendidas. Filhos são avaliados independentemente.
-
-Exemplo:
-
-```python
-MENU = [
-	{'title': 'Home', 'url': '/'},
-	{
-		'title': 'Agendamentos',
-		'url': '#',
-		'permissions': ['accounts.view_agendamento'],
-		'children': [
-			{'title': 'Novo', 'url': '/agendamentos/novo/', 'permissions': ['appointments.add']},
-			{'title': 'Listar', 'url': '/agendamentos/', 'permissions': ['appointments.view']},
-		]
-	},
-]
+```bash
+cd frontend
+npm install
+npm run dev
 ```
 
-Arquivos principais relacionados ao menu:
+O Vite faz proxy de `/api` para `localhost:8000` automaticamente.
 
-- `neurocare_project/menu_config.py` — defina o menu aqui.
-- `neurocare_project/context_processors.py` — filtra recursivamente os itens e expõe `MENU_ITEMS` aos templates.
-- `templates/includes/menu.html` e `templates/includes/menu_item.html` — templates que renderizam o menu recursivamente.
+## Estrutura do Projeto
 
-Notas de segurança e produção
+```
+neurocare/
+├── docker-compose.yml          # Orquestracao dos 3 servicos
+├── docker/postgres/init.sql    # DDL + seed data
+├── .env.example                # Variaveis de ambiente
+│
+├── backend/                    # Django REST API
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   ├── manage.py
+│   ├── neurocare_project/      # Settings, URLs, WSGI
+│   ├── pacientes/              # Models principais + serializers + viewsets
+│   ├── profissionais/          # Profissionais (tb_usuario)
+│   ├── evolucao_clinica/       # Evolucao clinica
+│   ├── avaliacao_neuropsicologica/
+│   ├── reabilitacao_neuropsicologica/
+│   ├── reabilitacao_objetivo/
+│   ├── reabilitacao_sessao/
+│   ├── transacoes/             # Transacoes financeiras
+│   ├── vendas/                 # Vendas vinculadas ao paciente
+│   ├── vendas_geral/           # Vendas gerais do consultorio
+│   └── ...                     # Lookup tables (convenios, formas_pagamento, etc.)
+│
+└── frontend/                   # React SPA
+    ├── Dockerfile
+    ├── nginx.conf              # Proxy /api/ -> backend
+    └── src/
+        ├── api/                # Axios client + endpoints
+        ├── auth/               # JWT login, context, protected routes
+        ├── components/         # DataTable, FormModal, FkSelect, Layout
+        ├── hooks/              # useCrud, useOptions
+        ├── pages/              # Paginas organizadas por modulo
+        └── types/              # Interfaces TypeScript
+```
 
-- Troque `SECRET_KEY` em `neurocare_project/settings.py` por um valor seguro antes de colocar em produção.
-- Não confie no fallback automático em produção: configure explicitamente o banco e variáveis de ambiente.
-- Evite deixar senhas em arquivos; prefira variáveis de ambiente ou um secrets manager.
+## API
 
-Se quiser, eu posso adicionar instruções para usar variáveis de ambiente (dotenv) ou mostrar como criar o superuser de forma não interativa em scripts CI/CD.
+Todos os endpoints estao sob `/api/` e requerem autenticacao JWT.
 
+### Autenticacao
+
+```bash
+# Obter token
+POST /api/token/
+{"username": "admin", "password": "admin123"}
+# Retorna: {"access": "...", "refresh": "..."}
+
+# Refresh
+POST /api/token/refresh/
+{"refresh": "..."}
+
+# Usuario atual
+GET /api/auth/me/
+Authorization: Bearer <access_token>
+```
+
+### Endpoints REST (CRUD completo)
+
+| Grupo | Endpoint | Model |
+|-------|----------|-------|
+| **Cadastro** | `/api/pacientes/` | Paciente |
+| | `/api/profissionais/` | Profissional |
+| | `/api/convenios/` | Convenio |
+| | `/api/formas-pagamento/` | FormaPagamento |
+| | `/api/tipos-produto/` | TipoProduto |
+| | `/api/produtos/` | Produto |
+| | `/api/faixas-etarias/` | FaixaEtaria |
+| | `/api/tipos-servico/` | TipoServico |
+| | `/api/contatos-emergencia/` | ContatoEmergencia |
+| | `/api/paciente-servico/` | PacienteServico |
+| | `/api/perfis-acesso/` | PerfilAcesso |
+| | `/api/usuarios/` | Usuario |
+| **Atendimento** | `/api/evolucao-clinica/` | EvolucaoClinica |
+| | `/api/avaliacao-neuropsicologica/` | AvaliacaoNeuropsicologica |
+| | `/api/reabilitacao-neuropsicologica/` | ReabilitacaoNeuropsicologica |
+| | `/api/reabilitacao-objetivo/` | ReabilitacaoObjetivo |
+| | `/api/reabilitacao-sessao/` | ReabilitacaoSessao |
+| | `/api/status-objetivo-reabilitacao/` | StatusObjetivoReabilitacao |
+| **Financeiro** | `/api/transacoes/` | TransacaoFinanceira |
+| | `/api/tipos-transacao/` | TipoTransacaoFinanceira |
+| | `/api/status-pagamento/` | StatusPagamento |
+| | `/api/formas-cobranca-reabilitacao/` | FormaCobrancaReabilitacao |
+| **Vendas** | `/api/vendas-vinculadas/` | VendaVinculada |
+| | `/api/vendas-geral/` | VendaGeral |
+| | `/api/vendas-geral-itens/` | VendaGeralItem |
+
+Todos suportam: `GET` (list/detail), `POST`, `PATCH`, `DELETE`.
+
+Paginacao: `?page=1&page_size=25` (max 1000).
+Busca: `?search=termo`.
+Filtros: `?campo=valor` (varia por endpoint).
+
+## Variaveis de Ambiente
+
+| Variavel | Default | Descricao |
+|----------|---------|-----------|
+| `NEUROCARE_SECRET_KEY` | `please-change-me...` | Django SECRET_KEY |
+| `NEUROCARE_DEBUG` | `false` | Debug mode |
+| `NEUROCARE_ALLOWED_HOSTS` | `localhost,127.0.0.1` | Hosts permitidos |
+| `POSTGRES_DB` | `postgres` | Nome do banco |
+| `POSTGRES_USER` | `postgres` | Usuario do banco |
+| `POSTGRES_PASSWORD` | `postgres` | Senha do banco |
+| `POSTGRES_HOST` | `localhost` | Host do banco |
+| `POSTGRES_PORT` | `5432` | Porta do banco |
+| `CORS_ALLOWED_ORIGINS` | `http://localhost:5173,...` | Origens CORS permitidas |
+
+## Banco de Dados
+
+O sistema usa PostgreSQL com schema `neurocare`. Todos os models Django sao `managed=False` — as tabelas sao criadas pelo script `docker/postgres/init.sql`, nao pelas migrations.
+
+As migrations do Django criam apenas as tabelas internas (`auth_user`, `django_session`, etc.).
+
+## Docker
+
+```bash
+# Subir tudo
+docker compose up --build -d
+
+# Ver logs
+docker compose logs -f backend
+
+# Parar
+docker compose down
+
+# Reset completo (apaga dados)
+docker compose down -v
+docker compose up --build
+```
+
+Servicos:
+- **postgres** (porta 5432) — banco com schema e seed data
+- **backend** (porta 8000) — Django/Gunicorn com 3 workers
+- **frontend** (porta 3000) — nginx servindo React + proxy para API

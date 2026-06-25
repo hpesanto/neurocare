@@ -33,7 +33,8 @@ class Profissional(models.Model):
 
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     id_perfil_acesso = models.ForeignKey(
-        PerfilAcesso, on_delete=models.PROTECT, db_column="id_perfil_acesso"
+        PerfilAcesso, on_delete=models.SET_NULL, db_column="id_perfil_acesso",
+        blank=True, null=True,
     )
 
     # keep a 'nome' attribute for backward compatibility in templates and queries

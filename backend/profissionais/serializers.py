@@ -1,3 +1,5 @@
+import hashlib
+
 from rest_framework import serializers
 
 from .models import PerfilAcesso, Profissional
@@ -14,12 +16,23 @@ class ProfissionalSerializer(serializers.ModelSerializer):
     perfil_acesso_nome = serializers.CharField(
         source="id_perfil_acesso.nome", read_only=True, default=None
     )
+    senha = serializers.CharField(write_only=True, required=False)
 
     class Meta:
         model = Profissional
         fields = [
             "id", "id_perfil_acesso", "perfil_acesso_nome", "nome", "email",
-            "login", "ativo", "data_criacao", "data_atualizacao",
+            "login", "senha", "ativo", "data_criacao", "data_atualizacao",
         ]
         read_only_fields = ["id", "data_criacao", "data_atualizacao"]
-        extra_kwargs = {"senha_hash": {"write_only": True, "required": False}}
+
+    def create(self, validated_data):
+        senha = validated_data.pop("senha", "changeme")
+        validated_data["senha_hash"] = hashlib.sha256(senha.encode()).hexdigest()
+        return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        senha = validated_data.pop("senha", None)
+        if senha:
+            validated_data["senha_hash"] = hashlib.sha256(senha.encode()).hexdigest()
+        return super().update(instance, validated_data)

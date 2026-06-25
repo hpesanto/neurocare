@@ -126,8 +126,8 @@ class Paciente(models.Model):
     data_nascimento = models.DateField()
     cpf = models.CharField(max_length=14, unique=True, blank=True, null=True)
     rg = models.CharField(max_length=20, blank=True, null=True)
-    genero = models.CharField(max_length=50, choices=GENERO_CHOICES)
-    estado_civil = models.CharField(max_length=50, choices=ESTADO_CIVIL_CHOICES)
+    genero = models.CharField(max_length=50, choices=GENERO_CHOICES, blank=True, null=True)
+    estado_civil = models.CharField(max_length=50, choices=ESTADO_CIVIL_CHOICES, blank=True, null=True)
     profissao = models.CharField(max_length=100, blank=True, null=True)
     telefone_principal = models.CharField(max_length=20)
     telefone_secundario = models.CharField(max_length=20, blank=True, null=True)
@@ -167,7 +167,7 @@ class Paciente(models.Model):
         null=True,
         db_column="id_faixa_etaria",
     )
-    status_paciente = models.CharField(max_length=50, choices=STATUS_CHOICES)
+    status_paciente = models.CharField(max_length=50, choices=STATUS_CHOICES, blank=True, null=True)
     observacoes_gerais = models.TextField(blank=True, null=True)
     data_criacao = models.DateTimeField(auto_now_add=True)
     data_atualizacao = models.DateTimeField(auto_now=True)

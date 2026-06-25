@@ -12,14 +12,13 @@ body {
 /* Sidebar */
 .nc-sidebar {
   width: 260px;
-  min-height: 100vh;
+  height: 100vh;
   background: var(--nc-sidebar-bg);
   position: fixed;
   top: 0;
   left: 0;
   z-index: 1040;
   overflow-y: auto;
-  transition: width 0.2s;
 }
 
 .nc-sidebar .nav-link {

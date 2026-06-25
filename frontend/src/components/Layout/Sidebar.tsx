@@ -57,7 +57,7 @@ const MENU: MenuSection[] = [
 
 export default function Sidebar() {
   return (
-    <aside className="nc-sidebar d-flex flex-column">
+    <aside className="nc-sidebar">
       <div className="px-3 py-3 border-bottom border-dark">
         <h5 className="text-white mb-0 fw-bold">
           <i className="bi bi-activity me-2" />

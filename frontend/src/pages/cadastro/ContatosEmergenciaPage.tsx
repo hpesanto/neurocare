@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
+import FkSelect from "../../components/FkSelect";
 import { useCrud } from "../../hooks/useCrud";
 import { ENDPOINTS } from "../../api/endpoints";
 
@@ -55,8 +56,11 @@ export default function ContatosEmergenciaPage() {
       >
         <Row className="g-3">
           <Col md={6}>
+            <FkSelect name="id_paciente" label="Paciente" endpoint={ENDPOINTS.pacientes} labelField="nome_completo" defaultValue={editing?.id_paciente} required />
+          </Col>
+          <Col md={6}>
             <Form.Group>
-              <Form.Label>Nome *</Form.Label>
+              <Form.Label>Nome do Contato *</Form.Label>
               <Form.Control name="nome_contato" defaultValue={editing?.nome_contato ?? ""} required />
             </Form.Group>
           </Col>
@@ -70,12 +74,6 @@ export default function ContatosEmergenciaPage() {
             <Form.Group>
               <Form.Label>Parentesco *</Form.Label>
               <Form.Control name="parentesco" defaultValue={editing?.parentesco ?? ""} required />
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group>
-              <Form.Label>ID Paciente *</Form.Label>
-              <Form.Control name="id_paciente" defaultValue={editing?.id_paciente ?? ""} required />
             </Form.Group>
           </Col>
         </Row>

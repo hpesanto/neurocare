@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
+import FkSelect from "../../components/FkSelect";
 import { useCrud } from "../../hooks/useCrud";
 import { ENDPOINTS } from "../../api/endpoints";
 import type { EvolucaoClinica } from "../../types/models";
@@ -47,16 +48,10 @@ export default function EvolucaoClinicaPage() {
       >
         <Row className="g-3">
           <Col md={6}>
-            <Form.Group>
-              <Form.Label>ID Paciente *</Form.Label>
-              <Form.Control name="id_paciente" defaultValue={editing?.id_paciente ?? ""} required />
-            </Form.Group>
+            <FkSelect name="id_paciente" label="Paciente" endpoint={ENDPOINTS.pacientes} labelField="nome_completo" defaultValue={editing?.id_paciente} required />
           </Col>
           <Col md={6}>
-            <Form.Group>
-              <Form.Label>ID Psicologo *</Form.Label>
-              <Form.Control name="id_psicologo" defaultValue={editing?.id_psicologo ?? ""} required />
-            </Form.Group>
+            <FkSelect name="id_psicologo" label="Psicologo" endpoint={ENDPOINTS.profissionais} labelField="nome" defaultValue={editing?.id_psicologo} required />
           </Col>
           <Col md={6}>
             <Form.Group>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
+import FkSelect from "../../components/FkSelect";
 import { useCrud } from "../../hooks/useCrud";
 import { ENDPOINTS } from "../../api/endpoints";
 
@@ -60,6 +61,12 @@ export default function VendasVinculadasPage() {
         onSubmit={handleSubmit}
       >
         <Row className="g-3">
+          <Col md={6}>
+            <FkSelect name="id_paciente" label="Paciente" endpoint={ENDPOINTS.pacientes} labelField="nome_completo" defaultValue={editing?.id_paciente} required />
+          </Col>
+          <Col md={6}>
+            <FkSelect name="id_produto" label="Produto" endpoint={ENDPOINTS.produtos} defaultValue={editing?.id_produto} required />
+          </Col>
           <Col md={4}>
             <Form.Group>
               <Form.Label>Data *</Form.Label>
@@ -85,22 +92,7 @@ export default function VendasVinculadasPage() {
             </Form.Group>
           </Col>
           <Col md={4}>
-            <Form.Group>
-              <Form.Label>ID Paciente *</Form.Label>
-              <Form.Control name="id_paciente" defaultValue={editing?.id_paciente ?? ""} required />
-            </Form.Group>
-          </Col>
-          <Col md={4}>
-            <Form.Group>
-              <Form.Label>ID Produto *</Form.Label>
-              <Form.Control name="id_produto" defaultValue={editing?.id_produto ?? ""} required />
-            </Form.Group>
-          </Col>
-          <Col md={6}>
-            <Form.Group>
-              <Form.Label>ID Forma Pagamento *</Form.Label>
-              <Form.Control name="id_forma_pagamento" defaultValue={editing?.id_forma_pagamento ?? ""} required />
-            </Form.Group>
+            <FkSelect name="id_forma_pagamento" label="Forma de Pagamento" endpoint={ENDPOINTS.formasPagamento} defaultValue={editing?.id_forma_pagamento} required />
           </Col>
         </Row>
       </FormModal>

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
+import FkSelect from "../../components/FkSelect";
 import { useCrud } from "../../hooks/useCrud";
 import { ENDPOINTS } from "../../api/endpoints";
 import type { Paciente } from "../../types/models";
@@ -194,6 +195,15 @@ export default function PacientesPage() {
           <i className="bi bi-send me-1" /> Encaminhamento e Convenio
         </h6>
         <Row className="g-3 mb-3">
+          <Col md={4}>
+            <FkSelect name="id_psicologo_responsavel" label="Psicologo Responsavel" endpoint={ENDPOINTS.profissionais} labelField="nome" defaultValue={editing?.id_psicologo_responsavel} />
+          </Col>
+          <Col md={4}>
+            <FkSelect name="id_convenio" label="Convenio" endpoint={ENDPOINTS.convenios} defaultValue={editing?.id_convenio} />
+          </Col>
+          <Col md={4}>
+            <FkSelect name="id_faixa_etaria" label="Faixa Etaria" endpoint={ENDPOINTS.faixasEtarias} defaultValue={editing?.id_faixa_etaria} />
+          </Col>
           <Col md={4}>
             <Form.Group>
               <Form.Label>Quem Encaminhou</Form.Label>

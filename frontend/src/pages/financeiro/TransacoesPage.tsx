@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
+import FkSelect from "../../components/FkSelect";
 import { useCrud } from "../../hooks/useCrud";
 import { ENDPOINTS } from "../../api/endpoints";
 import type { TransacaoFinanceira } from "../../types/models";
@@ -61,22 +62,16 @@ export default function TransacoesPage() {
             </Form.Group>
           </Col>
           <Col md={4}>
-            <Form.Group>
-              <Form.Label>ID Tipo Transacao *</Form.Label>
-              <Form.Control name="id_tipo_transacao" defaultValue={editing?.id_tipo_transacao ?? ""} required />
-            </Form.Group>
+            <FkSelect name="id_tipo_transacao" label="Tipo de Transacao" endpoint={ENDPOINTS.tiposTransacao} defaultValue={editing?.id_tipo_transacao} required />
           </Col>
-          <Col md={6}>
-            <Form.Group>
-              <Form.Label>ID Forma Pagamento *</Form.Label>
-              <Form.Control name="id_forma_pagamento" defaultValue={editing?.id_forma_pagamento ?? ""} required />
-            </Form.Group>
+          <Col md={4}>
+            <FkSelect name="id_forma_pagamento" label="Forma de Pagamento" endpoint={ENDPOINTS.formasPagamento} defaultValue={editing?.id_forma_pagamento} required />
           </Col>
-          <Col md={6}>
-            <Form.Group>
-              <Form.Label>ID Status Pagamento *</Form.Label>
-              <Form.Control name="id_status_pagamento" defaultValue={editing?.id_status_pagamento ?? ""} required />
-            </Form.Group>
+          <Col md={4}>
+            <FkSelect name="id_status_pagamento" label="Status Pagamento" endpoint={ENDPOINTS.statusPagamento} defaultValue={editing?.id_status_pagamento} required />
+          </Col>
+          <Col md={4}>
+            <FkSelect name="id_paciente" label="Paciente" endpoint={ENDPOINTS.pacientes} labelField="nome_completo" defaultValue={editing?.id_paciente ?? undefined} />
           </Col>
           <Col md={12}>
             <Form.Group>

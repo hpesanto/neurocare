@@ -1,30 +1,32 @@
-# Ambientes virtuais
-psico/
-venv/
-env/
-
-# Arquivos de cache e compilação Python
+# Python
 __pycache__/
 *.pyc
 *.pyo
 *.pyd
+venv/
+env/
+psico/
+backend/staticfiles/
 
-# Configurações de IDEs e editores (ex: VS Code, PyCharm)
+# Node
+frontend/node_modules/
+frontend/dist/
+
+# IDEs
 .vscode/
 .idea/
 
-# Arquivos de banco de dados locais (se usar SQLite, por exemplo)
+# OS
+Thumbs.db
+.DS_Store
+
+# DB
 *.sqlite3
-db.sqlite3
 
 # Logs
 *.log
 
-# Arquivos de sistema operacional
-Thumbs.db # Windows
-.DS_Store # macOS
-
-# Secrets e variáveis de ambiente (CRÍTICO!)
+# Secrets
 .env
 .env.local
 .env.*.local

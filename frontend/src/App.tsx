@@ -10,7 +10,11 @@ import ProfissionaisPage from "./pages/cadastro/ProfissionaisPage";
 import ProdutosPage from "./pages/cadastro/ProdutosPage";
 import ContatosEmergenciaPage from "./pages/cadastro/ContatosEmergenciaPage";
 import EvolucaoClinicaPage from "./pages/atendimento/EvolucaoClinicaPage";
+import AvaliacaoPage from "./pages/atendimento/AvaliacaoPage";
+import ObjetivosReabPage from "./pages/atendimento/ObjetivosReabPage";
+import SessoesReabPage from "./pages/atendimento/SessoesReabPage";
 import ReabilitacaoPage from "./pages/atendimento/ReabilitacaoPage";
+import PacienteServicoPage from "./pages/cadastro/PacienteServicoPage";
 import TransacoesPage from "./pages/financeiro/TransacoesPage";
 import VendasVinculadasPage from "./pages/vendas/VendasVinculadasPage";
 import VendasGeralPage from "./pages/vendas/VendasGeralPage";
@@ -48,13 +52,13 @@ export default function App() {
               <Route path="cadastro/faixas-etarias" element={<LookupCrudPage endpoint={ENDPOINTS.faixasEtarias} title="Faixas Etarias" itemLabel="Faixa Etaria" />} />
               <Route path="cadastro/tipos-servico" element={<LookupCrudPage endpoint={ENDPOINTS.tiposServico} title="Tipos de Servico" itemLabel="Tipo de Servico" />} />
               <Route path="cadastro/contatos-emergencia" element={<ContatosEmergenciaPage />} />
-              <Route path="cadastro/paciente-servico" element={<LookupCrudPage endpoint={ENDPOINTS.pacienteServico} title="Servicos do Paciente" itemLabel="Servico" />} />
+              <Route path="cadastro/paciente-servico" element={<PacienteServicoPage />} />
 
               {/* Atendimento */}
               <Route path="atendimento/evolucao-clinica" element={<EvolucaoClinicaPage />} />
-              <Route path="atendimento/avaliacao-neuropsicologica" element={<LookupCrudPage endpoint={ENDPOINTS.avaliacaoNeuropsicologica} title="Avaliacao Neuropsicologica" itemLabel="Avaliacao" />} />
-              <Route path="atendimento/objetivos-reabilitacao" element={<LookupCrudPage endpoint={ENDPOINTS.reabilitacaoObjetivo} title="Objetivos de Reabilitacao" itemLabel="Objetivo" />} />
-              <Route path="atendimento/sessoes-reabilitacao" element={<LookupCrudPage endpoint={ENDPOINTS.reabilitacaoSessao} title="Sessoes de Reabilitacao" itemLabel="Sessao" />} />
+              <Route path="atendimento/avaliacao-neuropsicologica" element={<AvaliacaoPage />} />
+              <Route path="atendimento/objetivos-reabilitacao" element={<ObjetivosReabPage />} />
+              <Route path="atendimento/sessoes-reabilitacao" element={<SessoesReabPage />} />
 
               {/* Financeiro */}
               <Route path="financeiro/reabilitacao" element={<ReabilitacaoPage />} />

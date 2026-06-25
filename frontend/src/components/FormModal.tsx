@@ -114,7 +114,7 @@ export default function FormModal({
   };
 
   return (
-    <Modal show={open} onHide={onClose} size={size} centered>
+    <Modal show={open} onHide={onClose} size={size} centered backdrop="static" keyboard={false}>
       <form onSubmit={handleSubmit}>
         <Modal.Header closeButton className="border-bottom">
           <Modal.Title as="h5">{title}</Modal.Title>

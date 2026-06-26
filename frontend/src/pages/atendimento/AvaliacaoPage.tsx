@@ -24,7 +24,7 @@ interface Avaliacao {
 }
 
 export default function AvaliacaoPage() {
-  const { items, isLoading, create, update, remove, refetch } = useCrud<Avaliacao>(ENDPOINTS.avaliacaoNeuropsicologica);
+  const { items, isLoading, create, remove, refetch } = useCrud<Avaliacao>(ENDPOINTS.avaliacaoNeuropsicologica);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Avaliacao | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);

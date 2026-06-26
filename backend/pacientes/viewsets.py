@@ -1,5 +1,7 @@
 from rest_framework import viewsets
 
+from neurocare_project.permissions import ReadOnlyForSecretaria
+
 from .models import (
     Convenio,
     ContatoEmergencia,
@@ -35,30 +37,35 @@ class UsuarioViewSet(viewsets.ModelViewSet):
 class ConvenioViewSet(viewsets.ModelViewSet):
     queryset = Convenio.objects.all().order_by("nome")
     serializer_class = ConvenioSerializer
+    permission_classes = [ReadOnlyForSecretaria]
     search_fields = ["nome"]
 
 
 class FormaPagamentoViewSet(viewsets.ModelViewSet):
     queryset = FormaPagamento.objects.all().order_by("nome")
     serializer_class = FormaPagamentoSerializer
+    permission_classes = [ReadOnlyForSecretaria]
     search_fields = ["nome"]
 
 
 class TipoProdutoViewSet(viewsets.ModelViewSet):
     queryset = TipoProduto.objects.all().order_by("nome")
     serializer_class = TipoProdutoSerializer
+    permission_classes = [ReadOnlyForSecretaria]
     search_fields = ["nome"]
 
 
 class TipoServicoViewSet(viewsets.ModelViewSet):
     queryset = TipoServico.objects.all().order_by("nome")
     serializer_class = TipoServicoSerializer
+    permission_classes = [ReadOnlyForSecretaria]
     search_fields = ["nome"]
 
 
 class FaixaEtariaViewSet(viewsets.ModelViewSet):
     queryset = FaixaEtaria.objects.all().order_by("nome")
     serializer_class = FaixaEtariaSerializer
+    permission_classes = [ReadOnlyForSecretaria]
     search_fields = ["nome"]
 
 

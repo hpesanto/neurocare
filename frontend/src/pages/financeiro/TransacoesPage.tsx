@@ -1,16 +1,38 @@
 import { useState } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import FkSelect from "../../components/FkSelect";
+import FilterBar, { type FilterField } from "../../components/FilterBar";
+import api from "../../api/client";
 import { useCrud } from "../../hooks/useCrud";
 import { ENDPOINTS } from "../../api/endpoints";
 import type { TransacaoFinanceira } from "../../types/models";
 
+const FILTER_FIELDS: FilterField[] = [
+  { name: "data_transacao__gte", label: "Data inicio", type: "date" },
+  { name: "data_transacao__lte", label: "Data fim", type: "date" },
+  { name: "id_tipo_transacao", label: "Tipo", type: "fk-select", endpoint: ENDPOINTS.tiposTransacao },
+  { name: "id_status_pagamento", label: "Status", type: "fk-select", endpoint: ENDPOINTS.statusPagamento },
+];
+
 export default function TransacoesPage() {
-  const { items, isLoading, create, update, remove } = useCrud<TransacaoFinanceira>(ENDPOINTS.transacoes);
+  const [filters, setFilters] = useState<Record<string, string>>({});
+  const { items, isLoading, create, update, remove } = useCrud<TransacaoFinanceira>(ENDPOINTS.transacoes, filters);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<TransacaoFinanceira | null>(null);
+
+  const exportar = async (formato: string) => {
+    const params = new URLSearchParams({ formato, ...filters });
+    const resp = await api.get(`/transacoes/exportar/?${params}`, { responseType: "blob" });
+    const ext = formato === "xlsx" ? "xlsx" : "csv";
+    const url = URL.createObjectURL(resp.data as Blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `transacoes.${ext}`;
+    a.click();
+    URL.revokeObjectURL(url);
+  };
 
   const handleSubmit = async (data: Record<string, string>) => {
     const cleaned: Record<string, string | null> = {};
@@ -26,6 +48,7 @@ export default function TransacoesPage() {
 
   return (
     <>
+      <FilterBar fields={FILTER_FIELDS} onApply={setFilters} onClear={() => setFilters({})} />
       <DataTable
         title="Transacoes Financeiras"
         columns={[
@@ -42,6 +65,14 @@ export default function TransacoesPage() {
         onEdit={(item) => { setEditing(item); setModalOpen(true); }}
         onDelete={(id) => { if (confirm("Excluir transacao?")) remove(id); }}
       />
+      <div className="d-flex gap-2 mt-3">
+        <Button variant="outline-success" size="sm" onClick={() => exportar("csv")}>
+          <i className="bi bi-filetype-csv me-1" /> Exportar CSV
+        </Button>
+        <Button variant="outline-success" size="sm" onClick={() => exportar("xlsx")}>
+          <i className="bi bi-file-earmark-excel me-1" /> Exportar Excel
+        </Button>
+      </div>
       <FormModal
         title={editing ? "Editar Transacao" : "Nova Transacao"}
         open={modalOpen}

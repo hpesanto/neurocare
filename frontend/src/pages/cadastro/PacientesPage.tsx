@@ -1,5 +1,6 @@
 import { useState } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { Button, Col, Form, Row } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import FkSelect from "../../components/FkSelect";
@@ -8,6 +9,7 @@ import { ENDPOINTS } from "../../api/endpoints";
 import type { Paciente } from "../../types/models";
 
 export default function PacientesPage() {
+  const navigate = useNavigate();
   const { items, isLoading, create, update, remove } = useCrud<Paciente>(ENDPOINTS.pacientes);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Paciente | null>(null);
@@ -29,7 +31,11 @@ export default function PacientesPage() {
       <DataTable
         title="Pacientes"
         columns={[
-          { key: "nome_completo", label: "Nome" },
+          { key: "nome_completo", label: "Nome", render: (i) => (
+            <Button variant="link" className="p-0 text-start" onClick={() => navigate(`/cadastro/pacientes/${i.id}`)}>
+              {i.nome_completo}
+            </Button>
+          )},
           { key: "cpf", label: "CPF" },
           { key: "telefone_principal", label: "Telefone" },
           { key: "email", label: "Email" },

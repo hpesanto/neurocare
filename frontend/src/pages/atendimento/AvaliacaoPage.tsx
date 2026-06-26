@@ -1,10 +1,11 @@
-import { useState } from "react";
-import { Col, Form, Row } from "react-bootstrap";
+import { useRef, useState } from "react";
+import { Button, Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import FkSelect from "../../components/FkSelect";
 import { useCrud } from "../../hooks/useCrud";
 import { ENDPOINTS } from "../../api/endpoints";
+import api from "../../api/client";
 
 interface Avaliacao {
   id: string;
@@ -19,23 +20,43 @@ interface Avaliacao {
   hipoteses_diagnosticas: string | null;
   resultados_principais: string | null;
   conclusao_recomendacoes: string | null;
+  caminho_laudo_pdf: string | null;
 }
 
 export default function AvaliacaoPage() {
-  const { items, isLoading, create, update, remove } = useCrud<Avaliacao>(ENDPOINTS.avaliacaoNeuropsicologica);
+  const { items, isLoading, create, update, remove, refetch } = useCrud<Avaliacao>(ENDPOINTS.avaliacaoNeuropsicologica);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<Avaliacao | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   const handleSubmit = async (data: Record<string, string>) => {
+    const file = fileRef.current?.files?.[0];
+
+    if (file || editing) {
+      const formData = new FormData();
+      for (const [k, v] of Object.entries(data)) {
+        if (v !== "") formData.append(k, v);
+      }
+      if (file) formData.append("laudo_pdf", file);
+
+      if (editing) {
+        await api.patch(`${ENDPOINTS.avaliacaoNeuropsicologica}${editing.id}/`, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      } else {
+        await api.post(ENDPOINTS.avaliacaoNeuropsicologica, formData, {
+          headers: { "Content-Type": "multipart/form-data" },
+        });
+      }
+      refetch();
+      return;
+    }
+
     const cleaned: Record<string, string | null> = {};
     for (const [k, v] of Object.entries(data)) {
       cleaned[k] = v === "" ? null : v;
     }
-    if (editing) {
-      await update({ id: editing.id, ...cleaned } as unknown as Avaliacao);
-    } else {
-      await create(cleaned as unknown as Avaliacao);
-    }
+    await create(cleaned as unknown as Avaliacao);
   };
 
   return (
@@ -47,6 +68,23 @@ export default function AvaliacaoPage() {
           { key: "psicologo_nome", label: "Psicologo" },
           { key: "data_avaliacao", label: "Data" },
           { key: "valor_avaliacao", label: "Valor (R$)" },
+          {
+            key: "caminho_laudo_pdf",
+            label: "Laudo",
+            render: (i) =>
+              i.caminho_laudo_pdf ? (
+                <Button
+                  variant="outline-primary"
+                  size="sm"
+                  href={`/media/${i.caminho_laudo_pdf}`}
+                  target="_blank"
+                >
+                  <i className="bi bi-file-earmark-pdf" /> PDF
+                </Button>
+              ) : (
+                <span className="text-muted">—</span>
+              ),
+          },
         ]}
         items={items}
         isLoading={isLoading}
@@ -78,6 +116,18 @@ export default function AvaliacaoPage() {
             <Form.Group>
               <Form.Label>Valor (R$)</Form.Label>
               <Form.Control name="valor_avaliacao" type="number" step="0.01" defaultValue={editing?.valor_avaliacao ?? ""} />
+            </Form.Group>
+          </Col>
+          <Col md={4}>
+            <Form.Group>
+              <Form.Label>Laudo PDF</Form.Label>
+              <Form.Control type="file" accept=".pdf" ref={fileRef} />
+              {editing?.caminho_laudo_pdf && (
+                <Form.Text className="text-success">
+                  <i className="bi bi-check-circle me-1" />
+                  Laudo ja anexado
+                </Form.Text>
+              )}
             </Form.Group>
           </Col>
           <Col md={12}>

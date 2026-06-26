@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include, path
 from rest_framework import serializers
@@ -8,18 +10,23 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
 
-class CurrentUserSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    username = serializers.CharField()
-    email = serializers.EmailField()
-    first_name = serializers.CharField()
-    last_name = serializers.CharField()
+from .permissions import get_perfil_nome, get_profissional
 
 
 @api_view(["GET"])
 @permission_classes([IsAuthenticated])
 def current_user(request):
-    return Response(CurrentUserSerializer(request.user).data)
+    user = request.user
+    prof = get_profissional(user)
+    return Response({
+        "id": user.id,
+        "username": user.username,
+        "email": user.email,
+        "first_name": user.first_name,
+        "last_name": user.last_name,
+        "perfil": get_perfil_nome(user),
+        "profissional_id": str(prof.id) if prof else None,
+    })
 
 from avaliacao_neuropsicologica.viewsets import AvaliacaoNeuropsicologicaViewSet
 from evolucao_clinica.viewsets import EvolucaoClinicaViewSet
@@ -45,6 +52,7 @@ from status_pagamento.viewsets import StatusPagamentoViewSet
 from tipos_transacao.viewsets import TipoTransacaoFinanceiraViewSet
 from transacoes.viewsets import TransacaoFinanceiraViewSet
 from vendas.viewsets import VendaVinculadaViewSet
+from transacoes.export_view import exportar_transacoes
 from vendas_geral.viewsets import VendaGeralItemViewSet, VendaGeralViewSet
 
 router = DefaultRouter()
@@ -84,8 +92,9 @@ router.register(r"vendas-geral-itens", VendaGeralItemViewSet)
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/", include(router.urls)),
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/auth/me/", current_user, name="current_user"),
-]
+    path("api/transacoes/exportar/", exportar_transacoes, name="exportar_transacoes"),
+    path("api/", include(router.urls)),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

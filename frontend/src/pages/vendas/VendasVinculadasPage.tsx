@@ -3,8 +3,16 @@ import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import FkSelect from "../../components/FkSelect";
+import FilterBar, { type FilterField } from "../../components/FilterBar";
 import { useCrud } from "../../hooks/useCrud";
 import { ENDPOINTS } from "../../api/endpoints";
+
+const FILTER_FIELDS: FilterField[] = [
+  { name: "data_venda__gte", label: "Data inicio", type: "date" },
+  { name: "data_venda__lte", label: "Data fim", type: "date" },
+  { name: "id_paciente", label: "Paciente", type: "fk-select", endpoint: ENDPOINTS.pacientes, labelField: "nome_completo" },
+  { name: "id_produto", label: "Produto", type: "fk-select", endpoint: ENDPOINTS.produtos },
+];
 
 interface VendaVinculada {
   id: string;
@@ -20,7 +28,8 @@ interface VendaVinculada {
 }
 
 export default function VendasVinculadasPage() {
-  const { items, isLoading, create, update, remove } = useCrud<VendaVinculada>(ENDPOINTS.vendasVinculadas);
+  const [filters, setFilters] = useState<Record<string, string>>({});
+  const { items, isLoading, create, update, remove } = useCrud<VendaVinculada>(ENDPOINTS.vendasVinculadas, filters);
   const [modalOpen, setModalOpen] = useState(false);
   const [editing, setEditing] = useState<VendaVinculada | null>(null);
 
@@ -38,6 +47,7 @@ export default function VendasVinculadasPage() {
 
   return (
     <>
+      <FilterBar fields={FILTER_FIELDS} onApply={setFilters} onClear={() => setFilters({})} />
       <DataTable
         title="Vendas Vinculadas ao Paciente"
         columns={[

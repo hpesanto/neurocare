@@ -23,6 +23,9 @@ export default function Header() {
             <Dropdown.Menu>
               <Dropdown.ItemText>
                 <small className="text-muted">{user?.email}</small>
+                {user?.perfil && (
+                  <div><small className="text-primary fw-semibold">{user.perfil}</small></div>
+                )}
               </Dropdown.ItemText>
               <Dropdown.Divider />
               <Dropdown.Item as={Button} variant="link" onClick={logout} className="text-danger">

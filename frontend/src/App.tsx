@@ -15,6 +15,7 @@ import ObjetivosReabPage from "./pages/atendimento/ObjetivosReabPage";
 import SessoesReabPage from "./pages/atendimento/SessoesReabPage";
 import ReabilitacaoPage from "./pages/atendimento/ReabilitacaoPage";
 import PacienteServicoPage from "./pages/cadastro/PacienteServicoPage";
+import PacienteDetailPage from "./pages/cadastro/PacienteDetailPage";
 import TransacoesPage from "./pages/financeiro/TransacoesPage";
 import VendasVinculadasPage from "./pages/vendas/VendasVinculadasPage";
 import VendasGeralPage from "./pages/vendas/VendasGeralPage";
@@ -44,6 +45,7 @@ export default function App() {
 
               {/* Cadastro */}
               <Route path="cadastro/pacientes" element={<PacientesPage />} />
+              <Route path="cadastro/pacientes/:id" element={<PacienteDetailPage />} />
               <Route path="cadastro/profissionais" element={<ProfissionaisPage />} />
               <Route path="cadastro/convenios" element={<LookupCrudPage endpoint={ENDPOINTS.convenios} title="Convenios" itemLabel="Convenio" />} />
               <Route path="cadastro/formas-pagamento" element={<LookupCrudPage endpoint={ENDPOINTS.formasPagamento} title="Formas de Pagamento" itemLabel="Forma de Pagamento" />} />

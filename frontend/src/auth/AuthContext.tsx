@@ -14,6 +14,8 @@ interface User {
   email: string;
   first_name: string;
   last_name: string;
+  perfil: string | null;
+  profissional_id: string | null;
 }
 
 interface AuthContextType {

@@ -287,6 +287,8 @@ ALTER TABLE tb_usuario ADD CONSTRAINT fk_usuario_perfil
 
 -- Seed data for testing
 INSERT INTO tb_perfil_acesso (nome, descricao) VALUES ('Administrador', 'Acesso total ao sistema') ON CONFLICT DO NOTHING;
+INSERT INTO tb_perfil_acesso (nome, descricao) VALUES ('Psicologo', 'Acesso aos proprios pacientes') ON CONFLICT DO NOTHING;
+INSERT INTO tb_perfil_acesso (nome, descricao) VALUES ('Secretaria', 'Acesso ao cadastro de pacientes') ON CONFLICT DO NOTHING;
 INSERT INTO tb_convenio (nome) VALUES ('Particular'), ('Unimed'), ('SulAmérica') ON CONFLICT DO NOTHING;
 INSERT INTO tb_forma_pagamento (nome) VALUES ('Dinheiro'), ('Cartão de Crédito'), ('PIX'), ('Boleto') ON CONFLICT DO NOTHING;
 INSERT INTO tb_faixa_etaria (nome, descricao) VALUES ('Criança', '0-12 anos'), ('Adolescente', '13-17 anos'), ('Adulto', '18-59 anos'), ('Idoso', '60+ anos') ON CONFLICT DO NOTHING;

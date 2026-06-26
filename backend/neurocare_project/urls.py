@@ -28,6 +28,7 @@ def current_user(request):
         "profissional_id": str(prof.id) if prof else None,
     })
 
+from agendamento.viewsets import AgendamentoViewSet
 from avaliacao_neuropsicologica.viewsets import AvaliacaoNeuropsicologicaViewSet
 from evolucao_clinica.viewsets import EvolucaoClinicaViewSet
 from formas_cobranca_reabilitacao.viewsets import FormaCobrancaReabilitacaoViewSet
@@ -56,6 +57,9 @@ from transacoes.export_view import exportar_transacoes
 from vendas_geral.viewsets import VendaGeralItemViewSet, VendaGeralViewSet
 
 router = DefaultRouter()
+
+# Agendamento
+router.register(r"agendamentos", AgendamentoViewSet)
 
 # Cadastro
 router.register(r"pacientes", PacienteViewSet)

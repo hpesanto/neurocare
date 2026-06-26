@@ -281,6 +281,21 @@ CREATE TABLE IF NOT EXISTS tb_transacao_financeira (
     data_atualizacao TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
 
+CREATE TABLE IF NOT EXISTS tb_agendamento (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id_profissional UUID NOT NULL REFERENCES tb_usuario(id) ON DELETE CASCADE,
+    id_paciente UUID NOT NULL REFERENCES tb_paciente(id) ON DELETE CASCADE,
+    sala INTEGER NOT NULL CHECK (sala IN (1, 2, 3)),
+    data DATE NOT NULL,
+    hora_inicio TIME NOT NULL,
+    hora_fim TIME NOT NULL,
+    tipo VARCHAR(50) DEFAULT 'Psicoterapia',
+    observacoes TEXT,
+    data_criacao TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    data_atualizacao TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+    UNIQUE(sala, data, hora_inicio)
+);
+
 -- Add FK from tb_usuario to tb_perfil_acesso (added after both tables exist)
 ALTER TABLE tb_usuario ADD CONSTRAINT fk_usuario_perfil
     FOREIGN KEY (id_perfil_acesso) REFERENCES tb_perfil_acesso(id) ON DELETE SET NULL;

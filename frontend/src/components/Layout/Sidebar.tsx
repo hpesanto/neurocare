@@ -14,6 +14,12 @@ interface MenuSection {
 
 const MENU: MenuSection[] = [
   {
+    title: "Agenda",
+    items: [
+      { label: "Calendario", path: "/agendamento", icon: "bi-calendar3" },
+    ],
+  },
+  {
     title: "Cadastro",
     items: [
       { label: "Pacientes", path: "/cadastro/pacientes", icon: "bi-people" },

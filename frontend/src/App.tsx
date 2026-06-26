@@ -19,6 +19,7 @@ import PacienteDetailPage from "./pages/cadastro/PacienteDetailPage";
 import TransacoesPage from "./pages/financeiro/TransacoesPage";
 import VendasVinculadasPage from "./pages/vendas/VendasVinculadasPage";
 import VendasGeralPage from "./pages/vendas/VendasGeralPage";
+import CalendarPage from "./pages/agendamento/CalendarPage";
 import { ENDPOINTS } from "./api/endpoints";
 
 const queryClient = new QueryClient({
@@ -41,7 +42,10 @@ export default function App() {
           <Routes>
             <Route path="/login" element={<LoginPage />} />
             <Route element={<ProtectedApp />}>
-              <Route index element={<Navigate to="/cadastro/pacientes" replace />} />
+              <Route index element={<Navigate to="/agendamento" replace />} />
+
+              {/* Agendamento */}
+              <Route path="agendamento" element={<CalendarPage />} />
 
               {/* Cadastro */}
               <Route path="cadastro/pacientes" element={<PacientesPage />} />

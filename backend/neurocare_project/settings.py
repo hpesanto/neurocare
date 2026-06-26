@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "transacoes",
     "tipos_transacao",
     "status_pagamento",
+    "agendamento",
 ]
 
 MIDDLEWARE = [

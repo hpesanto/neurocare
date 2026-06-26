@@ -1,4 +1,7 @@
 export const ENDPOINTS = {
+  // Agendamento
+  agendamentos: "/agendamentos/",
+
   // Auth
   token: "/token/",
   tokenRefresh: "/token/refresh/",

@@ -3,6 +3,7 @@ import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
 import FkSelect from "../../components/FkSelect";
+import TimeSelect from "../../components/TimeSelect";
 import FilterBar, { type FilterField } from "../../components/FilterBar";
 import { useCrud } from "../../hooks/useCrud";
 import { ENDPOINTS } from "../../api/endpoints";
@@ -70,10 +71,7 @@ export default function EvolucaoClinicaPage() {
             </Form.Group>
           </Col>
           <Col md={6}>
-            <Form.Group>
-              <Form.Label>Hora</Form.Label>
-              <Form.Control name="hora_sessao" type="time" defaultValue={editing?.hora_sessao ?? ""} />
-            </Form.Group>
+            <TimeSelect name="hora_sessao" label="Hora" defaultValue={editing?.hora_sessao} />
           </Col>
           <Col md={12}>
             <Form.Group>

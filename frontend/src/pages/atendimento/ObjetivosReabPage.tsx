@@ -59,7 +59,7 @@ export default function ObjetivosReabPage() {
       >
         <Row className="g-3">
           <Col md={6}>
-            <FkSelect name="id_reabilitacao" label="Reabilitacao" endpoint={ENDPOINTS.reabilitacaoNeuropsicologica} labelField="programa_descricao" defaultValue={editing?.id_reabilitacao} required />
+            <FkSelect name="id_reabilitacao" label="Reabilitacao" endpoint={ENDPOINTS.reabilitacaoNeuropsicologica} labelField="display_label" defaultValue={editing?.id_reabilitacao} required />
           </Col>
           <Col md={6}>
             <FkSelect name="id_status_objetivo" label="Status" endpoint={ENDPOINTS.statusObjetivoReabilitacao} defaultValue={editing?.id_status_objetivo ?? undefined} />

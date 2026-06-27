@@ -1,0 +1,4 @@
+# Scripts shell sempre com LF, mesmo commitando do Windows,
+# para não quebrar a execução no servidor Linux.
+*.sh text eol=lf
+deploy.sh text eol=lf

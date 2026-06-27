@@ -1,5 +1,6 @@
 import { Button, Container, Dropdown, Navbar } from "react-bootstrap";
 import { useAuth } from "../../auth/AuthContext";
+import HelpButton from "../HelpButton";
 
 export default function Header() {
   const { user, logout } = useAuth();
@@ -10,7 +11,8 @@ export default function Header() {
         <Navbar.Text className="fw-semibold" style={{ color: "#1a3c40" }}>
           Sistema de Gestao Clinica
         </Navbar.Text>
-        <div className="d-flex align-items-center">
+        <div className="d-flex align-items-center gap-2">
+          <HelpButton />
           <Dropdown align="end">
             <Dropdown.Toggle
               variant="light"

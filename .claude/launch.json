@@ -4,8 +4,9 @@
     {
       "name": "neurocare-frontend",
       "runtimeExecutable": "cmd",
-      "runtimeArgs": ["/c", "echo Server already running via Docker"],
-      "port": 3000
+      "runtimeArgs": ["/c", "npm", "run", "dev"],
+      "cwd": "frontend",
+      "port": 5173
     }
   ]
 }

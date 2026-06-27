@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Col, Form, Row } from "react-bootstrap";
 import DataTable from "../../components/DataTable";
 import FormModal from "../../components/FormModal";
+import FkSelect from "../../components/FkSelect";
 import { useCrud } from "../../hooks/useCrud";
 import { ENDPOINTS } from "../../api/endpoints";
 import type { Profissional } from "../../types/models";
@@ -70,6 +71,9 @@ export default function ProfissionaisPage() {
               <Form.Label>{editing ? "Nova Senha" : "Senha *"}</Form.Label>
               <Form.Control name="senha" type="password" required={!editing} />
             </Form.Group>
+          </Col>
+          <Col md={6}>
+            <FkSelect name="id_perfil_acesso" label="Perfil de Acesso" endpoint={ENDPOINTS.perfisAcesso} defaultValue={editing?.id_perfil_acesso ?? undefined} />
           </Col>
         </Row>
       </FormModal>

@@ -10,6 +10,8 @@ import { ENDPOINTS } from "../../api/endpoints";
 interface Sessao {
   id: string;
   id_reabilitacao: string;
+  paciente_nome: string | null;
+  profissional_nome: string | null;
   data_sessao: string;
   hora_sessao: string | null;
   passos_realizados: string;
@@ -38,6 +40,8 @@ export default function SessoesReabPage() {
       <DataTable
         title="Sessoes de Reabilitacao"
         columns={[
+          { key: "paciente_nome", label: "Paciente" },
+          { key: "profissional_nome", label: "Profissional" },
           { key: "data_sessao", label: "Data" },
           { key: "hora_sessao", label: "Hora" },
           { key: "passos_realizados", label: "Passos Realizados" },

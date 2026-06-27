@@ -9,6 +9,8 @@ import { ENDPOINTS } from "../../api/endpoints";
 interface Objetivo {
   id: string;
   id_reabilitacao: string;
+  paciente_nome: string | null;
+  profissional_nome: string | null;
   descricao: string;
   id_status_objetivo: string | null;
   status_nome: string | null;
@@ -37,6 +39,8 @@ export default function ObjetivosReabPage() {
       <DataTable
         title="Objetivos de Reabilitacao"
         columns={[
+          { key: "paciente_nome", label: "Paciente" },
+          { key: "profissional_nome", label: "Profissional" },
           { key: "descricao", label: "Descricao" },
           { key: "status_nome", label: "Status" },
           { key: "comentario_status", label: "Comentario" },

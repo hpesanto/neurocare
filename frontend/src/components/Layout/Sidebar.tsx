@@ -64,11 +64,11 @@ const MENU: MenuSection[] = [
 export default function Sidebar() {
   return (
     <aside className="nc-sidebar">
-      <div className="px-3 py-3 border-bottom border-dark">
-        <h5 className="text-white mb-0 fw-bold">
-          <i className="bi bi-activity me-2" />
-          NeuroCare
-        </h5>
+      <div className="px-3 py-3" style={{ borderBottom: "1px solid rgba(255,255,255,0.12)" }}>
+        <div className="d-flex align-items-center gap-2">
+          <img src="/logo.jpg" alt="NeuroCare" style={{ width: 32, height: 32, borderRadius: 4, background: "#fff" }} />
+          <h5 className="text-white mb-0 fw-bold" style={{ fontSize: 15 }}>NeuroCare</h5>
+        </div>
       </div>
       <Nav className="flex-column py-2 flex-grow-1">
         {MENU.map((section) => (

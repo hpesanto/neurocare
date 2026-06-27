@@ -1,12 +1,17 @@
 :root {
-  --nc-sidebar-bg: #1e293b;
+  --nc-sidebar-bg: #1a3c40;
   --nc-sidebar-hover: rgba(255, 255, 255, 0.08);
-  --nc-primary: #4361ee;
+  --nc-primary: #1a3c40;
+  --nc-accent: #5DCAA5;
+  --nc-bg: #f0f5f4;
+  --nc-border: #dce8e6;
+  --nc-text: #1a3c40;
+  --nc-text-muted: #4a6b6e;
 }
 
 body {
   font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  background: #f0f2f5;
+  background: var(--nc-bg);
 }
 
 /* Sidebar */
@@ -36,7 +41,7 @@ body {
 }
 
 .nc-sidebar .nav-link.active {
-  border-left: 3px solid var(--nc-primary);
+  border-left: 3px solid var(--nc-accent);
   padding-left: calc(1.25rem - 3px);
 }
 
@@ -63,7 +68,7 @@ body {
 /* Login */
 .nc-login-bg {
   min-height: 100vh;
-  background: linear-gradient(135deg, #4361ee 0%, #3a0ca3 100%);
+  background: linear-gradient(135deg, #1a3c40 0%, #0d2628 100%);
 }
 
 .nc-login-card {
@@ -76,20 +81,61 @@ body {
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #6c757d;
-  border-bottom-width: 1px;
+  color: var(--nc-text-muted);
+  border-bottom: 1px solid var(--nc-border);
   font-weight: 600;
+  background: var(--nc-bg);
 }
 
 .table td {
   vertical-align: middle;
   font-size: 0.875rem;
+  color: var(--nc-text);
 }
 
-/* Card subtle shadow */
+.table-hover tbody tr:hover {
+  background: #e8f0ee;
+}
+
+/* Card */
 .card {
-  border: none;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  border: 1px solid var(--nc-border);
+  box-shadow: none;
+}
+
+.card-header {
+  border-bottom: 1px solid var(--nc-border);
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--nc-primary);
+  border-color: var(--nc-primary);
+}
+.btn-primary:hover {
+  background: #143234;
+  border-color: #143234;
+}
+
+.btn-outline-primary {
+  color: var(--nc-primary);
+  border-color: var(--nc-primary);
+}
+.btn-outline-primary:hover {
+  background: var(--nc-primary);
+  border-color: var(--nc-primary);
+}
+
+/* Search input */
+.form-control:focus, .form-select:focus {
+  border-color: var(--nc-accent);
+  box-shadow: 0 0 0 0.2rem rgba(93, 202, 165, 0.25);
+}
+
+/* Badge */
+.badge.bg-secondary {
+  background: #e0efed !important;
+  color: var(--nc-primary) !important;
 }
 
 /* Scrollbar */

@@ -30,9 +30,9 @@ export default function LoginPage() {
       <Card className="nc-login-card shadow-lg border-0">
         <Card.Body className="p-5">
           <div className="text-center mb-4">
-            <i className="bi bi-activity fs-1 text-primary" />
-            <h3 className="fw-bold mt-2">NeuroCare</h3>
-            <p className="text-muted small">Sistema de Gestao Clinica</p>
+            <img src="/logo.jpg" alt="NeuroCare" style={{ width: 80, height: 80, borderRadius: 8 }} />
+            <h3 className="fw-bold mt-2" style={{ color: "#1a3c40" }}>NeuroCare</h3>
+            <p className="text-muted small">Consultorios Integrados</p>
           </div>
           <Form onSubmit={handleSubmit}>
             <Form.Group className="mb-3">

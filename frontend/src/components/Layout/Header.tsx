@@ -5,9 +5,9 @@ export default function Header() {
   const { user, logout } = useAuth();
 
   return (
-    <Navbar bg="white" className="border-bottom shadow-sm px-3">
+    <Navbar bg="white" className="px-3" style={{ borderBottom: "1px solid #dce8e6" }}>
       <Container fluid>
-        <Navbar.Text className="fw-semibold text-dark">
+        <Navbar.Text className="fw-semibold" style={{ color: "#1a3c40" }}>
           Sistema de Gestao Clinica
         </Navbar.Text>
         <div className="d-flex align-items-center">

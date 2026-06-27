@@ -25,8 +25,8 @@ services:
       POSTGRES_PASSWORD: postgres
       NEUROCARE_SECRET_KEY: change-me-in-production
       NEUROCARE_DEBUG: "true"
-      NEUROCARE_ALLOWED_HOSTS: "localhost,127.0.0.1,backend"
-      CORS_ALLOWED_ORIGINS: "http://localhost:3000,http://localhost:5173"
+      NEUROCARE_ALLOWED_HOSTS: "${NEUROCARE_ALLOWED_HOSTS:-localhost,127.0.0.1,backend}"
+      CORS_ALLOWED_ORIGINS: "${CORS_ALLOWED_ORIGINS:-http://localhost:3000,http://localhost:5173}"
       DJANGO_SUPERUSER_USERNAME: admin
       DJANGO_SUPERUSER_PASSWORD: admin123
       DJANGO_SUPERUSER_EMAIL: admin@neurocare.local

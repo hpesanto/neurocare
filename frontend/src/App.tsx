@@ -20,6 +20,7 @@ import TransacoesPage from "./pages/financeiro/TransacoesPage";
 import VendasVinculadasPage from "./pages/vendas/VendasVinculadasPage";
 import VendasGeralPage from "./pages/vendas/VendasGeralPage";
 import CalendarPage from "./pages/agendamento/CalendarPage";
+import AuditoriaPage from "./pages/admin/AuditoriaPage";
 import { ENDPOINTS } from "./api/endpoints";
 
 const queryClient = new QueryClient({
@@ -77,6 +78,9 @@ export default function App() {
               {/* Vendas */}
               <Route path="vendas/vinculadas" element={<VendasVinculadasPage />} />
               <Route path="vendas/geral" element={<VendasGeralPage />} />
+
+              {/* Admin */}
+              <Route path="admin/auditoria" element={<AuditoriaPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

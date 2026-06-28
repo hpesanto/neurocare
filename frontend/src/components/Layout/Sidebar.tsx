@@ -59,6 +59,12 @@ const MENU: MenuSection[] = [
       { label: "Vendas Gerais", path: "/vendas/geral", icon: "bi-shop" },
     ],
   },
+  {
+    title: "Admin",
+    items: [
+      { label: "Log de Auditoria", path: "/admin/auditoria", icon: "bi-shield-check" },
+    ],
+  },
 ];
 
 export default function Sidebar() {

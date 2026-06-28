@@ -1,131 +1,216 @@
-import { useState } from "react";
-import { Button } from "react-bootstrap";
-import DataTable from "../../components/DataTable";
-import FilterBar, { type FilterField } from "../../components/FilterBar";
+import { useState, useEffect } from "react";
+import { Container, Row, Col, Button, Form, Table, Spinner, Alert } from "react-bootstrap";
 import api from "../../api/client";
-import { useEffect } from "react";
 
 interface AuditLog {
   id: number;
   data_hora: string;
   usuario_login: string;
-  perfil: string;
+  perfil?: string;
   acao: string;
-  entidade: string;
-  objeto_id: string;
-  objeto_repr: string;
-  alteracoes: Record<string, any> | null;
-  ip: string;
-  user_agent: string;
-  metodo_http: string;
-  caminho: string;
+  entidade?: string;
+  objeto_id?: string;
+  objeto_repr?: string;
+  ip?: string;
 }
-
-const FILTER_FIELDS: FilterField[] = [
-  { name: "data_hora__gte", label: "Data Inicial", type: "date" },
-  { name: "data_hora__lte", label: "Data Final", type: "date" },
-  { name: "acao", label: "Ação", type: "select", options: [
-    { value: "LOGIN", label: "Login" },
-    { value: "LOGIN_FALHA", label: "Login Falha" },
-    { value: "LOGOUT", label: "Logout" },
-    { value: "CREATE", label: "Criação" },
-    { value: "UPDATE", label: "Alteração" },
-    { value: "DELETE", label: "Exclusão" },
-    { value: "LEITURA", label: "Leitura" },
-  ] },
-  { name: "entidade", label: "Entidade", type: "text" },
-  { name: "search", label: "Usuário/Objeto", type: "text" },
-];
 
 export default function AuditoriaPage() {
   const [logs, setLogs] = useState<AuditLog[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [filters, setFilters] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [filters, setFilters] = useState({
+    acao: "",
+    entidade: "",
+    usuario: "",
+  });
 
   const fetchLogs = async () => {
-    setIsLoading(true);
+    setLoading(true);
+    setError("");
     try {
-      const params = new URLSearchParams(filters);
-      const { data } = await api.get(`/auditoria/?${params}`);
-      setLogs(Array.isArray(data) ? data : data.results || []);
-    } catch (error: any) {
-      const message = error.response?.status === 403
-        ? "Acesso negado. Você precisa ser administrador."
-        : "Erro ao carregar logs";
-      alert(message);
-      console.error("Erro:", error);
+      const params = new URLSearchParams();
+      if (filters.acao) params.append("acao", filters.acao);
+      if (filters.entidade) params.append("entidade", filters.entidade);
+      if (filters.usuario) params.append("search", filters.usuario);
+
+      const response = await api.get(`/auditoria/?${params}`);
+      const data = Array.isArray(response.data) ? response.data : response.data.results || [];
+      setLogs(data);
+    } catch (err: any) {
+      const msg = err.response?.status === 403
+        ? "Acesso negado - você precisa ser admin"
+        : err.message || "Erro ao carregar logs";
+      setError(msg);
+      console.error("Erro:", err);
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     fetchLogs();
-  }, [filters]);
+  }, []);
 
-  const exportar = async (formato: string) => {
+  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    setFilters({ ...filters, [e.target.name]: e.target.value });
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    fetchLogs();
+  };
+
+  const handleExport = async (formato: string) => {
     try {
-      const params = new URLSearchParams({ formato, ...filters });
-      const resp = await api.get(`/auditoria/exportar/?${params}`, { responseType: "blob" });
-      const ext = formato === "xlsx" ? "xlsx" : "csv";
-      const url = URL.createObjectURL(resp.data as Blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `auditoria.${ext}`;
-      a.click();
+      const params = new URLSearchParams();
+      params.append("formato", formato);
+      if (filters.acao) params.append("acao", filters.acao);
+      if (filters.entidade) params.append("entidade", filters.entidade);
+      if (filters.usuario) params.append("search", filters.usuario);
+
+      const response = await api.get(`/auditoria/exportar/?${params}`, {
+        responseType: "blob",
+      });
+
+      const url = URL.createObjectURL(response.data as Blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `auditoria.${formato}`;
+      link.click();
       URL.revokeObjectURL(url);
-    } catch (error) {
+    } catch (err) {
       alert("Erro ao exportar");
-      console.error("Erro:", error);
+      console.error("Erro:", err);
     }
   };
 
-  const formatDate = (dateStr: string) => {
-    return new Date(dateStr).toLocaleString("pt-BR");
-  };
-
-  const getAcaoColor = (acao: string) => {
-    const colors: Record<string, string> = {
-      LOGIN: "success",
-      LOGIN_FALHA: "danger",
-      LOGOUT: "warning",
-      CREATE: "info",
-      UPDATE: "primary",
-      DELETE: "danger",
-      LEITURA: "secondary",
-    };
-    return colors[acao] || "light";
-  };
-
   return (
-    <>
-      <FilterBar fields={FILTER_FIELDS} onApply={setFilters} onClear={() => setFilters({})} />
-      <DataTable
-        title="Log de Auditoria"
-        columns={[
-          { key: "data_hora", label: "Data/Hora", render: (v) => formatDate(v) },
-          { key: "acao", label: "Ação", render: (v) => (
-            <span className={`badge bg-${getAcaoColor(v)}`}>{v}</span>
-          ) },
-          { key: "usuario_login", label: "Usuário" },
-          { key: "entidade", label: "Entidade" },
-          { key: "objeto_repr", label: "Objeto" },
-          { key: "ip", label: "IP" },
-        ]}
-        items={logs}
-        isLoading={isLoading}
-        onAdd={() => {}}
-        onEdit={() => alert("Log é imutável - somente leitura")}
-        onDelete={() => alert("Log é imutável - somente leitura")}
-      />
-      <div className="d-flex gap-2 mt-3">
-        <Button variant="outline-success" size="sm" onClick={() => exportar("csv")}>
-          <i className="bi bi-filetype-csv me-1" /> Exportar CSV
-        </Button>
-        <Button variant="outline-success" size="sm" onClick={() => exportar("xlsx")}>
-          <i className="bi bi-file-earmark-excel me-1" /> Exportar Excel
-        </Button>
-      </div>
-    </>
+    <Container className="mt-4">
+      <h2>Log de Auditoria</h2>
+
+      {/* Filtros */}
+      <Form onSubmit={handleSearch} className="mb-4 p-3 bg-light rounded">
+        <Row>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Ação</Form.Label>
+              <Form.Select name="acao" value={filters.acao} onChange={handleFilterChange}>
+                <option value="">Todas</option>
+                <option value="LOGIN">Login</option>
+                <option value="LOGIN_FALHA">Login Falha</option>
+                <option value="LOGOUT">Logout</option>
+                <option value="CREATE">Criação</option>
+                <option value="UPDATE">Alteração</option>
+                <option value="DELETE">Exclusão</option>
+                <option value="LEITURA">Leitura</option>
+              </Form.Select>
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Entidade</Form.Label>
+              <Form.Control
+                type="text"
+                name="entidade"
+                value={filters.entidade}
+                onChange={handleFilterChange}
+                placeholder="ex: Paciente"
+              />
+            </Form.Group>
+          </Col>
+          <Col md={3}>
+            <Form.Group>
+              <Form.Label>Usuário</Form.Label>
+              <Form.Control
+                type="text"
+                name="usuario"
+                value={filters.usuario}
+                onChange={handleFilterChange}
+                placeholder="ex: admin"
+              />
+            </Form.Group>
+          </Col>
+          <Col md={3} className="d-flex align-items-end gap-2">
+            <Button variant="primary" type="submit" className="w-100">
+              Buscar
+            </Button>
+          </Col>
+        </Row>
+      </Form>
+
+      {/* Erros */}
+      {error && <Alert variant="danger">{error}</Alert>}
+
+      {/* Loading */}
+      {loading && (
+        <div className="text-center p-5">
+          <Spinner animation="border" />
+          <p className="mt-2">Carregando...</p>
+        </div>
+      )}
+
+      {/* Tabela */}
+      {!loading && logs.length === 0 && !error && (
+        <Alert variant="info">Nenhum log encontrado</Alert>
+      )}
+
+      {!loading && logs.length > 0 && (
+        <>
+          <div className="table-responsive">
+            <Table striped bordered hover>
+              <thead>
+                <tr>
+                  <th>Data/Hora</th>
+                  <th>Ação</th>
+                  <th>Usuário</th>
+                  <th>Entidade</th>
+                  <th>Objeto</th>
+                  <th>IP</th>
+                </tr>
+              </thead>
+              <tbody>
+                {logs.map((log) => (
+                  <tr key={log.id}>
+                    <td>{new Date(log.data_hora).toLocaleString("pt-BR")}</td>
+                    <td>
+                      <span className={`badge bg-${getAcaoBadgeColor(log.acao)}`}>
+                        {log.acao}
+                      </span>
+                    </td>
+                    <td>{log.usuario_login}</td>
+                    <td>{log.entidade || "-"}</td>
+                    <td>{log.objeto_repr || "-"}</td>
+                    <td>{log.ip || "-"}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </div>
+
+          {/* Export */}
+          <div className="d-flex gap-2 mt-3">
+            <Button variant="success" size="sm" onClick={() => handleExport("csv")}>
+              <i className="bi bi-filetype-csv me-1" /> CSV
+            </Button>
+            <Button variant="success" size="sm" onClick={() => handleExport("xlsx")}>
+              <i className="bi bi-file-earmark-excel me-1" /> Excel
+            </Button>
+          </div>
+        </>
+      )}
+    </Container>
   );
+}
+
+function getAcaoBadgeColor(acao: string): string {
+  const colors: Record<string, string> = {
+    LOGIN: "success",
+    LOGIN_FALHA: "danger",
+    LOGOUT: "warning",
+    CREATE: "info",
+    UPDATE: "primary",
+    DELETE: "danger",
+    LEITURA: "secondary",
+  };
+  return colors[acao] || "light";
 }

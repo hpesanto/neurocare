@@ -62,7 +62,7 @@ const MENU: MenuSection[] = [
   {
     title: "Admin",
     items: [
-      { label: "Log de Auditoria", path: "/admin/auditoria", icon: "bi-shield-check" },
+      { label: "Log de Auditoria", path: "/auditoria", icon: "bi-shield-check" },
     ],
   },
 ];

@@ -80,7 +80,7 @@ export default function App() {
               <Route path="vendas/geral" element={<VendasGeralPage />} />
 
               {/* Admin */}
-              <Route path="admin/auditoria" element={<AuditoriaPage />} />
+              <Route path="auditoria" element={<AuditoriaPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

@@ -10,6 +10,7 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from auditoria.auth_views import AuditTokenObtainPairView, logout_view
+from auditoria.viewsets import AuditLogViewSet
 from .permissions import get_perfil_nome, get_profissional
 
 
@@ -57,6 +58,9 @@ from transacoes.export_view import exportar_transacoes
 from vendas_geral.viewsets import VendaGeralItemViewSet, VendaGeralViewSet
 
 router = DefaultRouter()
+
+# Auditoria
+router.register(r"auditoria", AuditLogViewSet)
 
 # Agendamento
 router.register(r"agendamentos", AgendamentoViewSet)

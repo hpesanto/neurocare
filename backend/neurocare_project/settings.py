@@ -85,6 +85,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "neurocare_project.wsgi.application"
 
+_default_options = {"options": "-c search_path=neurocare"}
+if os.environ.get("NEUROCARE_TESTING", "").lower() in ("1", "true", "yes"):
+    _default_options = {}
+
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -103,7 +107,7 @@ DATABASES = {
         "PORT": os.environ.get(
             "POSTGRES_PORT", os.environ.get("NEUROCARE_DB_PORT", "5432")
         ),
-        "OPTIONS": {"options": "-c search_path=neurocare"},
+        "OPTIONS": _default_options,
     }
 }
 

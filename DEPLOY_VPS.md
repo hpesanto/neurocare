@@ -33,7 +33,7 @@ apt update && apt upgrade -y
 ```bash
 adduser neurocare
 usermod -aG sudo neurocare
-su - neurocare
+su - neurocare (psico10!)
 ```
 
 ---
@@ -52,6 +52,15 @@ sudo chmod a+r /etc/apt/keyrings/docker.gpg
 # Repositorio Docker
 echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
 
+#### atenção com observação para versões de inux ####
+# Em vez de $(lsb_release -cs), use "noble" fixo
+echo "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu noble stable" | sudo tee /etc/apt/sources.list.d/docker.list > /dev/null
+
+sudo apt update
+sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+################################################################
+
+
 # Instalar Docker
 sudo apt update
 sudo apt install -y docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
@@ -61,8 +70,8 @@ sudo usermod -aG docker neurocare
 newgrp docker
 
 # Verificar instalacao
-docker --version
-docker compose version
+docker --version --* Docker version 29.6.1, build 8900f1d
+docker compose version --*** Docker Compose version v5.2.0
 ```
 
 ---
@@ -209,6 +218,10 @@ docker compose -f docker-compose.prod.yml build
 ```bash
 docker compose -f docker-compose.prod.yml up -d
 ```
+
+cd /home/neurocare/neurocare
+docker compose -f docker-compose.prod.yml down -v
+docker compose -f docker-compose.prod.yml up -d
 
 ### 7.3 Verificar se tudo subiu
 
@@ -453,6 +466,17 @@ docker compose -f docker-compose.prod.yml exec backend python manage.py createsu
 # Ver espaco em disco
 docker system df
 ```
+
+cd /home/neurocare/neurocare
+
+# Puxar atualizações do git
+git pull origin main
+
+# Rebuild e restart
+docker compose -f docker-compose.prod.yml build
+docker compose -f docker-compose.prod.yml up -d
+
+
 
 ---
 

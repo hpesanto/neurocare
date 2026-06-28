@@ -33,3 +33,4 @@ Thumbs.db
 *.pem
 *.key
 Espec_NeuroCare_2025.docx
+docker-compose.yml

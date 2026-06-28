@@ -1,6 +1,15 @@
 
 hoes -> hpEkIq1029##
 
+--acesse sua vps usando 
+ssh root@187.127.37.57
+
+ssh neurocare@187.127.37.57
+
+
+admin / NeuroCare@Admin2026
+
+NeuroCare@Admin2026
 
 #NeuroCare — Descrição Técnica  
 Arquitetura  

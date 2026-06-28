@@ -52,11 +52,16 @@ const AuditoriaPage: React.FC = () => {
       if (filters.data_inicio) params.append('data_hora__gte', filters.data_inicio);
       if (filters.data_fim) params.append('data_hora__lte', filters.data_fim);
 
-      const { data } = await api.get(`/auditoria/?${params}`);
-      setLogs(data.results || data);
+      const response = await api.get(`/auditoria/?${params}`);
+      const logsData = Array.isArray(response.data) ? response.data : response.data.results || [];
+      setLogs(logsData);
       setSearchParams(params);
-    } catch (error) {
+    } catch (error: any) {
+      const message = error.response?.status === 403
+        ? 'Acesso negado. Você precisa ser administrador.'
+        : error.response?.data?.detail || 'Erro ao carregar logs';
       console.error('Erro ao carregar logs:', error);
+      alert(message);
     } finally {
       setLoading(false);
     }
@@ -98,8 +103,9 @@ const AuditoriaPage: React.FC = () => {
       a.click();
       window.URL.revokeObjectURL(url);
       document.body.removeChild(a);
-    } catch (error) {
+    } catch (error: any) {
       console.error(`Erro ao exportar ${formato}:`, error);
+      alert(`Erro ao exportar ${formato}: ${error.message}`);
     }
   };
 

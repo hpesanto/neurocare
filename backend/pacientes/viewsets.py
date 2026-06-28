@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 
+from auditoria.mixins import AuditLogMixin
 from neurocare_project.permissions import ReadOnlyForSecretaria
 
 from .models import (
@@ -28,55 +29,55 @@ from .serializers import (
 )
 
 
-class UsuarioViewSet(viewsets.ModelViewSet):
+class UsuarioViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = Usuario.objects.all().order_by("nome_completo")
     serializer_class = UsuarioSerializer
     search_fields = ["nome_completo", "email"]
 
 
-class ConvenioViewSet(viewsets.ModelViewSet):
+class ConvenioViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = Convenio.objects.all().order_by("nome")
     serializer_class = ConvenioSerializer
     permission_classes = [ReadOnlyForSecretaria]
     search_fields = ["nome"]
 
 
-class FormaPagamentoViewSet(viewsets.ModelViewSet):
+class FormaPagamentoViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = FormaPagamento.objects.all().order_by("nome")
     serializer_class = FormaPagamentoSerializer
     permission_classes = [ReadOnlyForSecretaria]
     search_fields = ["nome"]
 
 
-class TipoProdutoViewSet(viewsets.ModelViewSet):
+class TipoProdutoViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = TipoProduto.objects.all().order_by("nome")
     serializer_class = TipoProdutoSerializer
     permission_classes = [ReadOnlyForSecretaria]
     search_fields = ["nome"]
 
 
-class TipoServicoViewSet(viewsets.ModelViewSet):
+class TipoServicoViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = TipoServico.objects.all().order_by("nome")
     serializer_class = TipoServicoSerializer
     permission_classes = [ReadOnlyForSecretaria]
     search_fields = ["nome"]
 
 
-class FaixaEtariaViewSet(viewsets.ModelViewSet):
+class FaixaEtariaViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = FaixaEtaria.objects.all().order_by("nome")
     serializer_class = FaixaEtariaSerializer
     permission_classes = [ReadOnlyForSecretaria]
     search_fields = ["nome"]
 
 
-class ProdutoViewSet(viewsets.ModelViewSet):
+class ProdutoViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = Produto.objects.select_related("id_tipo_produto").order_by("nome")
     serializer_class = ProdutoSerializer
     search_fields = ["nome"]
     filterset_fields = ["ativo", "id_tipo_produto"]
 
 
-class PacienteViewSet(viewsets.ModelViewSet):
+class PacienteViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = Paciente.objects.select_related(
         "id_psicologo_responsavel", "id_convenio", "id_faixa_etaria"
     ).order_by("nome_completo")
@@ -85,14 +86,14 @@ class PacienteViewSet(viewsets.ModelViewSet):
     filterset_fields = ["status_paciente", "genero", "id_convenio"]
 
 
-class ContatoEmergenciaViewSet(viewsets.ModelViewSet):
+class ContatoEmergenciaViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = ContatoEmergencia.objects.select_related("id_paciente").order_by("nome_contato")
     serializer_class = ContatoEmergenciaSerializer
     filterset_fields = ["id_paciente"]
     search_fields = ["nome_contato"]
 
 
-class PacienteServicoViewSet(viewsets.ModelViewSet):
+class PacienteServicoViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = PacienteServico.objects.select_related(
         "id_paciente", "id_tipo_servico"
     ).order_by("-data_inicio")

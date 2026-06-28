@@ -33,6 +33,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "rest_framework_simplejwt.token_blacklist",
     "corsheaders",
     "django_filters",
     "pacientes",
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     "tipos_transacao",
     "status_pagamento",
     "agendamento",
+    "auditoria",
 ]
 
 MIDDLEWARE = [

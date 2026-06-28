@@ -1,3 +1,4 @@
+from auditoria.mixins import AuditLogMixin
 from rest_framework import viewsets
 
 from neurocare_project.mixins import OwnPsicologoQuerysetMixin

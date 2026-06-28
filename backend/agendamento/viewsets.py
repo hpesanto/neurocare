@@ -1,10 +1,11 @@
+from auditoria.mixins import AuditLogMixin
 from rest_framework import viewsets
 
 from .models import Agendamento
 from .serializers import AgendamentoSerializer
 
 
-class AgendamentoViewSet(viewsets.ModelViewSet):
+class AgendamentoViewSet(AuditLogMixin, viewsets.ModelViewSet):
     queryset = Agendamento.objects.select_related(
         "id_profissional", "id_paciente"
     ).order_by("data", "hora_inicio")

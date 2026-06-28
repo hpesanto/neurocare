@@ -35,7 +35,7 @@ def registrar_log(
                 objeto_id=objeto_id,
                 objeto_repr=objeto_repr,
                 alteracoes=alteracoes,
-                id_usuario=id_usuario,
+                id_usuario_id=id_usuario,  # FK: recebe o PK (int) diretamente
                 id_profissional=id_profissional,
                 perfil=perfil,
                 ip=ip,
@@ -46,4 +46,5 @@ def registrar_log(
         except Exception as e:
             logger.exception(f"Erro ao registrar auditoria ({acao}): {e}")
 
+    # Grava após o commit da operação; se não houver transação ativa, roda na hora.
     transaction.on_commit(create_log)

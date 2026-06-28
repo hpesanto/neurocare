@@ -131,11 +131,13 @@ class AuditLogMixin:
 
     def perform_update(self, serializer):
         """Capturar UPDATE com diff."""
-        instance = self.get_object()
+        # Usa o mesmo objeto que o serializer vai salvar (ainda com valores antigos).
+        instance = serializer.instance
         old_data = self.serialize_instance(instance)
 
         super().perform_update(serializer)
 
+        # serializer.update() mutou o mesmo objeto in-place com os valores novos.
         new_data = self.serialize_instance(instance)
         alteracoes = compute_diff(old_data, new_data)
 

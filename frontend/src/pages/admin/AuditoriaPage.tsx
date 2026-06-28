@@ -51,7 +51,7 @@ export default function AuditoriaPage() {
     fetchLogs();
   }, []);
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleFilterChange = (e: any) => {
     setFilters({ ...filters, [e.target.name]: e.target.value });
   };
 

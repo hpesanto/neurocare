@@ -9,7 +9,7 @@ from .models import AvaliacaoNeuropsicologica
 from .serializers import AvaliacaoNeuropsicologicaSerializer
 
 
-class AvaliacaoNeuropsicologicaViewSet(OwnPsicologoQuerysetMixin, viewsets.ModelViewSet):
+class AvaliacaoNeuropsicologicaViewSet(AuditLogMixin, OwnPsicologoQuerysetMixin, viewsets.ModelViewSet):
     queryset = AvaliacaoNeuropsicologica.objects.select_related(
         "id_paciente", "id_psicologo"
     ).order_by("-data_avaliacao")
@@ -17,3 +17,4 @@ class AvaliacaoNeuropsicologicaViewSet(OwnPsicologoQuerysetMixin, viewsets.Model
     permission_classes = [IsPsicologaOrAdmin]
     parser_classes = [MultiPartParser, FormParser, JSONParser]
     filterset_fields = ["id_paciente", "id_psicologo"]
+    audit_read = True  # Auditar leitura (LGPD)

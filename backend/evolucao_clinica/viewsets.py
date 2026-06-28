@@ -8,7 +8,7 @@ from .models import EvolucaoClinica
 from .serializers import EvolucaoClinicaSerializer
 
 
-class EvolucaoClinicaViewSet(OwnPsicologoQuerysetMixin, viewsets.ModelViewSet):
+class EvolucaoClinicaViewSet(AuditLogMixin, OwnPsicologoQuerysetMixin, viewsets.ModelViewSet):
     queryset = EvolucaoClinica.objects.select_related(
         "id_paciente", "id_psicologo"
     ).order_by("-data_sessao", "-hora_sessao")
@@ -20,3 +20,4 @@ class EvolucaoClinicaViewSet(OwnPsicologoQuerysetMixin, viewsets.ModelViewSet):
         "data_sessao": ["exact", "gte", "lte"],
     }
     search_fields = ["evolucao_texto"]
+    audit_read = True  # Auditar leitura (LGPD)

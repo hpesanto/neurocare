@@ -11,3 +11,4 @@ class ReabilitacaoSessaoViewSet(AuditLogMixin, viewsets.ModelViewSet):
     ).order_by("-data_sessao", "-hora_sessao")
     serializer_class = ReabilitacaoSessaoSerializer
     filterset_fields = ["id_reabilitacao"]
+    audit_read = True  # Auditar leitura (LGPD)

@@ -1,4 +1,6 @@
 from rest_framework import serializers
+from datetime import datetime, timedelta
+from threading import Lock
 from .utils import (
     get_client_ip,
     get_user_agent,
@@ -7,12 +9,50 @@ from .utils import (
 )
 from .services import registrar_log
 
+# Dedupe de LEITURA: cache em memory com TTL de 60s
+# Evita logar a mesma leitura N vezes em janela curta (mesmo usuário, mesmo objeto)
+_read_cache = {}
+_read_cache_lock = Lock()
+
+
+def _dedupe_read_key(user_id, entity, object_id):
+    """Gerar chave para dedupe de leitura."""
+    return f"{user_id}:{entity}:{object_id}"
+
+
+def _should_log_read(user_id, entity, object_id):
+    """Verificar se deve logar esta leitura (dedupe com TTL 60s)."""
+    key = _dedupe_read_key(user_id, entity, object_id)
+    now = datetime.utcnow()
+
+    with _read_cache_lock:
+        if key in _read_cache:
+            last_read = _read_cache[key]
+            if (now - last_read) < timedelta(seconds=60):
+                return False  # Já foi logado recentemente
+        _read_cache[key] = now
+        return True
+
+
+# Limpar cache a cada 5 minutos
+def _cleanup_read_cache():
+    """Remover entradas expiradas do cache."""
+    with _read_cache_lock:
+        now = datetime.utcnow()
+        expired = [k for k, v in _read_cache.items() if (now - v) > timedelta(minutes=5)]
+        for k in expired:
+            del _read_cache[k]
+
 
 class AuditLogMixin:
     """
     Mixin para capturar CREATE, UPDATE, DELETE e LEITURA (retrieve) em ViewSets.
     Registra automaticamente em AuditLog de forma best-effort.
+
+    Atributo de classe:
+    - audit_read: se True, registra LEITURA em retrieve (default: False)
     """
+    audit_read = False
 
     def get_audit_info(self):
         """Extrair informações básicas de request para auditoria."""
@@ -142,26 +182,31 @@ class AuditLogMixin:
         super().perform_destroy(instance)
 
     def retrieve(self, request, *args, **kwargs):
-        """Capturar LEITURA (retrieve)."""
+        """Capturar LEITURA (retrieve) se audit_read=True (com dedupe)."""
         instance = self.get_object()
 
-        audit_info = self.get_audit_info()
-        id_profissional, perfil = self.get_profissional_info()
+        if self.audit_read:
+            audit_info = self.get_audit_info()
+            entity_name = instance.__class__.__name__
 
-        registrar_log(
-            usuario_login=audit_info['usuario_login'],
-            acao='LEITURA',
-            entidade=instance.__class__.__name__,
-            objeto_id=str(instance.pk),
-            objeto_repr=self.get_object_repr(instance),
-            alteracoes=None,
-            id_usuario=audit_info['id_usuario'],
-            id_profissional=id_profissional,
-            perfil=perfil,
-            ip=audit_info['ip'],
-            user_agent=audit_info['user_agent'],
-            metodo_http=audit_info['metodo_http'],
-            caminho=audit_info['caminho'],
-        )
+            # Dedupe: não logar se foi logado nos últimos 60 segundos (mesmo usuário + objeto)
+            if _should_log_read(audit_info['id_usuario'], entity_name, str(instance.pk)):
+                id_profissional, perfil = self.get_profissional_info()
+
+                registrar_log(
+                    usuario_login=audit_info['usuario_login'],
+                    acao='LEITURA',
+                    entidade=entity_name,
+                    objeto_id=str(instance.pk),
+                    objeto_repr=self.get_object_repr(instance),
+                    alteracoes=None,
+                    id_usuario=audit_info['id_usuario'],
+                    id_profissional=id_profissional,
+                    perfil=perfil,
+                    ip=audit_info['ip'],
+                    user_agent=audit_info['user_agent'],
+                    metodo_http=audit_info['metodo_http'],
+                    caminho=audit_info['caminho'],
+                )
 
         return super().retrieve(request, *args, **kwargs)

@@ -11,3 +11,4 @@ class ReabilitacaoObjetivoViewSet(AuditLogMixin, viewsets.ModelViewSet):
     ).order_by("-data_criacao")
     serializer_class = ReabilitacaoObjetivoSerializer
     filterset_fields = ["id_reabilitacao", "id_status_objetivo"]
+    audit_read = True  # Auditar leitura (LGPD)

@@ -84,6 +84,7 @@ class PacienteViewSet(AuditLogMixin, viewsets.ModelViewSet):
     serializer_class = PacienteSerializer
     search_fields = ["nome_completo", "cpf", "email"]
     filterset_fields = ["status_paciente", "genero", "id_convenio"]
+    audit_read = True  # Auditar leitura de prontuários (LGPD)
 
 
 class ContatoEmergenciaViewSet(AuditLogMixin, viewsets.ModelViewSet):
